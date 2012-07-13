@@ -156,7 +156,7 @@ The dumb domain name list is stored in /admin/ as well at /admin/dumb.txt
 
 * Allows an administrator to search and sort URLs by all of their different characteristics/fields pretty easily
  - Stores search/sort methods in cookies so refreshes of the page do not wipe out the search/sort values
-* Gives the ability to quickly/easily disable a spam/malicious/bad/whatever URL
+* Gives the ability to quickly/easily disable a spm/malicious/bad/whatever URL
  - Clicking the IP address of the creator of a bad URL allows you to quickly disable all URLs created by that IP address
  - Statuses are "0" (disabled) or "1" (active; default)
 * Lets an administrator edit the details of any specific URL
@@ -174,16 +174,4 @@ mysql> SELECT urls.*, count(visits.id) AS visitors FROM urls INNER JOIN visits O
 1 row in set (0.01 sec)
 ===
 
-================================================================================
-
-4. THANKS
-
-* <3 to:
- - AMP Energy
- - Stan Theman
- - BrianOK
- - Luke
- - Jico
- - Jason
- - neilforobot
- - Apple, Inc.
+ENJOY!
