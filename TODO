@@ -1,0 +1,5 @@
+TODO for gaw.sh:
+
+- fix blacklist lookup functions to understand multiple A (and AAAA maybe?) records/CNAMEs and check all the things
+- isZEN/isZENNS does not work if the URL has an IP address instead of a domain name; dns_get_record is weird?
+

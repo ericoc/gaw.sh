@@ -1,0 +1,11 @@
+ErrorDocument 404 /go.php?x=404
+ErrorDocument 403 /go.php?x=403
+
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} !^gaw\.sh$ [NC]
+RewriteRule ^(.*)$ http://gaw.sh/$1 [L,R=301]
+
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
+RewriteRule ^(.*)$ /go.php?x=$1 [L]
