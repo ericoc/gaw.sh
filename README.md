@@ -151,6 +151,7 @@ Lets an administrator edit the details of any specific URL
 * No method by which to delete an URL, only disable/edit/hide it
 
 Can view the number of visits to an URL; my first time using a JOIN in MySQL (thanks Stan!):
+
 	$listurls = mysql_query("SELECT urls.*, count(visits.id) AS visitors FROM urls INNER JOIN visits ON visits.id = urls.id GROUP BY visits.id ORDER BY visitors $sorthow LIMIT $limit", $link);
 
 	mysql> SELECT urls.*, count(visits.id) AS visitors FROM urls INNER JOIN visits ON visits.id = urls.id GROUP BY visits.id ORDER BY visitors desc limit 1;
