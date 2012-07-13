@@ -6,7 +6,7 @@ Eric O'Callaghan
 2011-11-11
 
 http://gaw.sh/ is a simple URL shortener which I created mostly over a two week vacation using PHP with a MySQL database containing two tables ("urls" and "visits")
-My design skills suck, but it works; CSS is at http://gaw.sh/gawsh.css (Thanks to Jico for the alternating table row background colors tip! see "(tr:nth-child...)")
+My design skills suck, but it works. Thanks to Jico for the alternating table row background colors tip! (see "tr:nth-child..." in gawsh.css)
 
 ================================================================================
 
@@ -150,7 +150,7 @@ Content-Type: text/html
 
 3. ADMINISTERING
 
-I built a simple administration panel to view/manage URLs somewhat which can be found at /admin/ and uses .htaccess/.htpasswd for authentication
+I built a simple administration panel to view/manage URLs at /admin/ which just uses .htaccess/.htpasswd for authentication
 
 The dumb domain name list is stored in /admin/ as well at /admin/dumb.txt
 
