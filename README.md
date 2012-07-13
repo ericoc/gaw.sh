@@ -153,7 +153,7 @@ The dumb domain name list is stored in /admin/ as well at /admin/dumb.txt
 
 * Allows an administrator to search and sort URLs by all of their different characteristics/fields pretty easily
 	* Stores search/sort methods in cookies so refreshes of the page do not wipe out the search/sort values
-* Gives the ability to quickly/easily disable a spm/malicious/bad/whatever URL
+* Gives the ability to quickly/easily disable a spam/malicious/bad/whatever URL
 	* Clicking the IP address of the creator of a bad URL allows you to quickly disable all URLs created by that IP address
 	* Statuses are:
 		* 0 - disabled
