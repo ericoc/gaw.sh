@@ -5,9 +5,11 @@ GAW.SH URL SHORTENER
 Eric O'Callaghan
 2011-11-11
 
-http://gaw.sh/ is a simple URL shortener which I created mostly over a two week vacation using PHP with a MySQL database containing two tables ("urls" and "visits")
+http://gaw.sh/ is a simple URL shortener which I created mostly over a two week vacation using PHP with a MySQL database
+containing two tables ("urls" and "visits")
 
-My design skills suck, but it works. Thanks to Jico for the alternating table row background colors tip! (see "tr:nth-child..." in gawsh.css)
+My design skills suck, but it works. Thanks to Jico for the alternating table row background colors tip!
+(see "tr:nth-child..." in gawsh.css)
 
 ================================================================================
 
@@ -56,7 +58,8 @@ mysql> show columns from urls;
  * Generate one using the base36 of auto-incremented numeric database ID (from MySQL "urls" table)
   - $shorturl = base_convert($id, 10, 36);
  * If the generated one is also taken:
-  - Keep generating new ones using base36 of random generated number (0-10), followed by numeric database ID, and UNIX time until we find something that is not taken
+  - Keep generating new ones using base36 of random generated number (0-10), followed by numeric database ID,
+    and UNIX time until we find something that is not taken
   - $shorturl = base_convert(rand(0,10).$id.time(), 10, 36);
 
 * Example data:
@@ -73,11 +76,13 @@ mysql> select * from urls order by id desc limit 1;
 
 ================================================================================
 
-The following section describes what happens when someone tries to go to a shortened URL by visiting http://gaw.sh/<whatever>
+The following section describes what happens when someone tries to go to a shortened URL
+by visiting http://gaw.sh/<whatever>
 
 2. VISITING
 
-* .htaccess rewrites any requests for gaw.sh/<whatever> that are not for a real file or directory to /go.php?x=<whatever> like so:
+* .htaccess rewrites any requests for gaw.sh/<whatever>
+  that are not for a real file or directory to /go.php?x=<whatever> like so:
 
 ===
 RewriteEngine On
@@ -87,8 +92,8 @@ RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
 RewriteRule ^(.*)$ /go.php?x=$1 [L]
 ===
 
-* A row is inserted in to the MySQL "visits" table with the database ID of the URL from the "urls" table (relational, woo!) as well as the IP address, browser, and referring URL
-  of the visitor along with the UNIX time of the visit:
+* A row is inserted in to the MySQL "visits" table with the database ID of the URL from the "urls" table
+  as well as the IP address, browser, and referring URL of the visitor along with the UNIX time of the visit:
 
 ===
 mysql> show columns from visits;
@@ -137,7 +142,8 @@ Server: Apache
 Content-Type: text/html
 ===
 
-* HTTP 404 ("Not Found") error message otherwise (if the short URL never existed or has a funky status like "-1" for "Hidden") :
+* HTTP 404 ("Not Found") error message otherwise
+  (if the short URL never existed or has a funky status like "-1" for "Hidden") :
 
 ===
 $ curl -I http://gaw.sh/404
@@ -151,14 +157,15 @@ Content-Type: text/html
 
 3. ADMINISTERING
 
-I built a simple administration panel to view/manage URLs at /admin/ which just uses .htaccess/.htpasswd for authentication
+I built a simple administration panel to view/manage URLs at /admin/
+which just uses .htaccess/.htpasswd for authentication
 
 The dumb domain name list is stored in /admin/ as well at /admin/dumb.txt
 
 * Allows an administrator to search and sort URLs by all of their different characteristics/fields pretty easily
  - Stores search/sort methods in cookies so refreshes of the page do not wipe out the search/sort values
 * Gives the ability to quickly/easily disable a spm/malicious/bad/whatever URL
- - Clicking the IP address of the creator of a bad URL allows you to quickly disable all URLs created by that IP address
+ - Clicking the IP address of the creator of a bad URL allows you toquickly disable all URLs created by that IP address
  - Statuses are "0" (disabled) or "1" (active; default)
 * Lets an administrator edit the details of any specific URL
  - No method by which to delete an URL, only disable/edit/hide it
