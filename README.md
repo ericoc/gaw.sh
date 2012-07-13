@@ -1,17 +1,16 @@
 # GAW.SH URL SHORTENER
 
-## Eric O'Callaghan
-### Started: 2011-11-11
+### Eric O'Callaghan
+### Started: November 11th, 2011
 
-* http://gaw.sh/ is a simple URL shortener which I created mostly over a two week vacation using PHP with a MySQL database containing two tables ("urls" and "visits") *
-
-My design skills suck, but it works. Thanks to Jico for the alternating table row background colors tip! (see "tr:nth-child..." in gawsh.css)
+## http://gaw.sh/ is a simple URL shortener which I created mostly over a two week vacation using PHP with a MySQL database containing two tables ("urls" and "visits")
+### My design skills suck, but it works. Thanks to Jico for the alternating table row background colors tip! (see "tr:nth-child..." in gawsh.css)
 
 ---------------------------------------
 
-The following section describes most of the main/index page of http://gaw.sh/
+#### The following section describes most of the main/index page of http://gaw.sh/
 
-1. ADDING
+### ADDING
 
 * Check that URL actually exists and does not return 404
  * http://php.net/manual/en/book.curl.php
@@ -71,9 +70,9 @@ The following section describes most of the main/index page of http://gaw.sh/
 
 ---------------------------------------
 
-The following section describes what happens when someone tries to go to a shortened URL by visiting http://gaw.sh/<whatever>
+#### The following section describes what happens when someone tries to go to a shortened URL by visiting http://gaw.sh/<whatever>
 
-2. VISITING
+### VISITING
 
 * .htaccess rewrites any requests for gaw.sh/<whatever> that are not for a real file or directory to /go.php?x=<whatever> like so:
 
@@ -145,12 +144,11 @@ The following section describes what happens when someone tries to go to a short
 
 ---------------------------------------
 
-3. ADMINISTERING
+### ADMINISTERING
 
-I built a simple administration panel to view/manage URLs at /admin/ which just uses .htaccess/.htpasswd for authentication
+#### I built a simple administration panel to view/manage URLs at /admin/ which just uses .htaccess/.htpasswd for authentication
+#### The dumb domain name list is stored in /admin/ as well at /admin/dumb.txt
 
-The dumb domain name list is stored in /admin/ as well at /admin/dumb.txt
-o
 * Allows an administrator to search and sort URLs by all of their different characteristics/fields pretty easily
  - Stores search/sort methods in cookies so refreshes of the page do not wipe out the search/sort values
 * Gives the ability to quickly/easily disable a spm/malicious/bad/whatever URL
@@ -173,4 +171,4 @@ o
 
 ---------------------------------------
 
-ENJOY!
+## ENJOY!
