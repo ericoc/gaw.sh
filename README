@@ -11,7 +11,6 @@ My design skills suck, but it works; CSS is at http://gaw.sh/gawsh.css (Thanks t
 ================================================================================
 
 The following section describes most of the main/index page of http://gaw.sh/
-The source for this file can be found at: http://gaw.sh/index.phps
 
 1. ADDING
 
@@ -74,7 +73,6 @@ mysql> select * from urls order by id desc limit 1;
 ================================================================================
 
 The following section describes what happens when someone tries to go to a shortened URL by visiting http://gaw.sh/<whatever>
-The source for the file that handles these requests can be found at: http://gaw.sh/go.phps
 
 2. VISITING
 
@@ -120,7 +118,7 @@ mysql> select * from visits order by id desc limit 1;
 * HTTP 301 redirect ("Moved Permanently") to the long/actual URL if it is active (status "1"):
 
 ===
-air:~ eric$ curl -I http://gaw.sh/8static
+$ curl -I http://gaw.sh/8static
 HTTP/1.1 301 Moved Permanently
 Date: Mon, 12 Dec 2011 00:21:54 GMT
 Server: Apache
@@ -131,7 +129,7 @@ Content-Type: text/html
 * HTTP 410 ("Gone") error message if the short URL is determined to be disabled (status "0"):
 
 ===
-air:~ eric$ curl -I http://gaw.sh/nope
+$ curl -I http://gaw.sh/nope
 HTTP/1.1 410 Gone
 Date: Mon, 12 Dec 2011 01:00:34 GMT
 Server: Apache
@@ -141,7 +139,7 @@ Content-Type: text/html
 * HTTP 404 ("Not Found") error message otherwise (if the short URL never existed or has a funky status like "-1" for "Hidden") :
 
 ===
-air:~ eric$ curl -I http://gaw.sh/404
+$ curl -I http://gaw.sh/404
 HTTP/1.1 404 Not Found
 Date: Mon, 12 Dec 2011 01:00:54 GMT
 Server: Apache
