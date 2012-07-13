@@ -70,9 +70,9 @@ If they did not give an optional custom alias:
 
 ---------------------------------------
 
-#### The following section describes what happens when someone tries to go to a shortened URL by visiting http://gaw.sh/<whatever>
-
 ### Visiting URLs
+
+#### This section describes what happens when someone tries to go to a shortened URL by visiting http://gaw.sh/whatever
 
 .htaccess rewrites any requests for gaw.sh/<whatever> that are not for a real file or directory to /go.php?x=<whatever> like so:
 
