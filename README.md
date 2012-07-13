@@ -1,5 +1,7 @@
 # GAW.SH URL SHORTENER
+
 by: Eric O'Callaghan
+
 started: November 11th, 2011
 
 http://gaw.sh/ is a simple URL shortener which I created mostly over a two week vacation using PHP with a MySQL database containing two tables ("urls" and "visits")
