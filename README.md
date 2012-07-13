@@ -74,7 +74,7 @@ If they did not give an optional custom alias:
 
 ### This section describes what happens when someone tries to go to a shortened URL by visiting http://gaw.sh/whatever
 
-.htaccess rewrites any requests for gaw.sh/<whatever> that are not for a real file or directory to /go.php?x=<whatever> like so:
+.htaccess rewrites any requests for gaw.sh/whatever that are not for a real file or directory to /go.php?x=whatever like so:
 
 ===
 	RewriteEngine On
