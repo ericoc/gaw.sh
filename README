@@ -87,8 +87,7 @@ RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
 RewriteRule ^(.*)$ /go.php?x=$1 [L]
 ===
 
-* A row is inserted in to the MySQL "visits" table with the database ID of the URL from the "urls" table (relational, woo!) as well as the IP address, browser, and referring URL
-  of the visitor along with the UNIX time of the visit:
+* A row is inserted in to the MySQL "visits" table with the database ID of the URL from the "urls" table (relational, woo!) as well as the IP address, browser, and referring URL of the visitor along with the UNIX time of the visit:
 
 ===
 mysql> show columns from visits;
