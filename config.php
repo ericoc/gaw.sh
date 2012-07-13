@@ -15,4 +15,9 @@ if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) { $ip = $_SERVER['HTTP_X_FORWARDED_
 if (isset($_SERVER['HTTP_USER_AGENT'])) { $browser = $_SERVER['HTTP_USER_AGENT']; }
 if (isset($_SERVER['HTTP_REFERER'])) { $referrer = $_SERVER['HTTP_REFERER']; }
 
+// Create function to make strings safe for MySQL
+function sqlsafe ($x) {
+        return mysql_real_escape_string($x);
+}
+
 ?>

@@ -1,10 +1,5 @@
 <?php
 
-// Create function to make strings safe for MySQL
-function sqlsafe ($x) {
-	return mysql_real_escape_string($x);
-}
-
 // Create a function to check if a URL is on Spamhaus' DBL
 function isDBL ($domain) {
 

@@ -18,8 +18,8 @@
 if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'http://') ) {
 
 	// Include configuration and functions files
-	include('config.php'); // MySQL credentials and user variables
-	include('functions.php'); // sqlsafe() and the blacklist/URL checks
+	include('config.php'); // MySQL credentials, user variables, and sqlsafe() function
+	include('functions.php'); // blacklist/URL verification checks
 
 	// Trim submitted URL, throw "http://" on the front if it doesn't start with either http:// or https://
 	$url = trim($_POST['url']);
