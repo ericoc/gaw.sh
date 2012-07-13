@@ -3,9 +3,6 @@
 // Turn on crazy error checkage
 error_reporting('E_ALL');
 
-// Include configuration; don't need functions.php here
-include('config.php');
-
 // Create function to set header and display error message on bad URLs
 function showError ($error) {
 
@@ -35,12 +32,15 @@ END;
 // Start the search for the URL if an alias was given
 if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 
+	// Include configuration; don't need functions.php here
+	include('config.php');
+
 	// Connect to MySQL and choose database
 	$link = mysql_connect($sqlhost, $sqluser, $sqlpass) OR die('Cannot connect to DB!');
 	mysql_select_db($sqldb, $link);
 
 	// Parse URL alias
-	$alias = mysql_real_escape_string(trim($_GET['x']), $link);
+	$alias = sqlsafe(trim($_GET['x']));
 
 	// Check if the alias exists
 	$check = mysql_query("SELECT id, url, status FROM `urls` WHERE `alias` = '$alias'", $link);
