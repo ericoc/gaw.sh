@@ -70,9 +70,9 @@ If they did not give an optional custom alias:
 
 ---------------------------------------
 
-### Visiting URLs
+## Visiting URLs
 
-#### This section describes what happens when someone tries to go to a shortened URL by visiting http://gaw.sh/whatever
+### This section describes what happens when someone tries to go to a shortened URL by visiting http://gaw.sh/whatever
 
 .htaccess rewrites any requests for gaw.sh/<whatever> that are not for a real file or directory to /go.php?x=<whatever> like so:
 
@@ -144,7 +144,7 @@ HTTP 404 ("Not Found") error message otherwise (if the short URL never existed o
 
 ---------------------------------------
 
-### Administering URLs
+## Administering URLs
 
 I built a simple administration panel to view/manage URLs at /admin/ which just uses .htaccess/.htpasswd for authentication.
 The dumb domain name list is stored in /admin/ as well at /admin/dumb.txt
