@@ -1,9 +1,9 @@
 # GAW.SH URL SHORTENER
 
 ## Eric O'Callaghan
-## 2011-11-11
+### Started: 2011-11-11
 
-http://gaw.sh/ is a simple URL shortener which I created mostly over a two week vacation using PHP with a MySQL database containing two tables ("urls" and "visits")
+* http://gaw.sh/ is a simple URL shortener which I created mostly over a two week vacation using PHP with a MySQL database containing two tables ("urls" and "visits") *
 
 My design skills suck, but it works. Thanks to Jico for the alternating table row background colors tip! (see "tr:nth-child..." in gawsh.css)
 
