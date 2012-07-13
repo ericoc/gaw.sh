@@ -14,25 +14,25 @@ My design skills suck, but it works. Thanks to Jico for the alternating table ro
 
 ### This section describes most of the main/index page of http://gaw.sh/
 
-* Check that URL actually exists and does not return 404
-	* http://php.net/manual/en/book.curl.php
+Check that URL actually exists and does not return 404
+* http://php.net/manual/en/book.curl.php
 
-* If they gave an (optional) custom alias:
-	* Make sure it is alpha-numeric and not taken
+If they gave an (optional) custom alias:
+* Make sure it is alpha-numeric and not taken
 
-* Checks URL domain name against:
-	* Dumb domain list
-  		* Mostly contains other URL shorteners, localhost, gaw.sh itself, etc...
-	* Spamhaus Domain Block List (DBL)
-		* http://www.spamhaus.org/dbl/
-	* SURBL
-		* http://www.surbl.org/
-	* URIBL
-		* http://www.uribl.com/
+Checks URL domain name against:
+* Dumb domain list
+	* Mostly contains other URL shorteners, localhost, gaw.sh itself, etc...
+* Spamhaus Domain Block List (DBL)
+	* http://www.spamhaus.org/dbl/
+* SURBL
+	* http://www.surbl.org/
+* URIBL
+	* http://www.uribl.com/
 
-* Checks domain name IP address and authoritative name servers against:
-	* Spamhaus ZEN (SBL, SBLCSS, XBL and PBL)
-		* http://www.spamhaus.org/zen/
+Checks domain name IP address and authoritative name servers against:
+* Spamhaus ZEN (SBL, SBLCSS, XBL and PBL)
+	* http://www.spamhaus.org/zen/
 
 If everything goes well and checks out, we add a URL to the "urls" table of the MySQL database, then...
 
@@ -49,12 +49,12 @@ If everything goes well and checks out, we add a URL to the "urls" table of the 
 	+--------+------------------+------+-----+---------+----------------+
 	6 rows in set (0.00 sec)
 
-If they did not give an optional custom alias:
+If they did not give an (optional) custom alias:
 * Generate one using the base36 of auto-incremented numeric database ID (from MySQL "urls" table)
 	* $shorturl = base_convert($id, 10, 36);
-	* If the generated one is also taken:
-		* Keep generating new ones using base36 of random generated number (0-10), followed by numeric database ID, and UNIX time until we find something that is not taken
-			* $shorturl = base_convert(rand(0,10).$id.time(), 10, 36);
+* If the generated one is also taken:
+	* Keep generating new ones using base36 of random generated number (0-10), followed by numeric database ID, and UNIX time until we find something that is not taken
+		* $shorturl = base_convert(rand(0,10).$id.time(), 10, 36);
 
 Example data:
 
@@ -135,18 +135,21 @@ HTTP 404 ("Not Found") error message otherwise (if the short URL never existed o
 I built a simple administration panel to view/manage URLs at /admin/ which just uses .htaccess/.htpasswd for authentication.
 The dumb domain name list is stored in /admin/ as well at /admin/dumb.txt
 
-* Allows an administrator to search and sort URLs by all of their different characteristics/fields pretty easily
-	* Stores search/sort methods in cookies so refreshes of the page do not wipe out the search/sort values
-* Gives the ability to quickly/easily disable a spam/malicious/bad/whatever URL
-	* Clicking the IP address of the creator of a bad URL allows you to quickly disable all URLs created by that IP address
-	* Statuses are:
-		* 0 - disabled
-		* 1 - active (default)
-		* -1 - "hidden" (returns 404; can only be set by admin) 
-* Lets an administrator edit the details of any specific URL
-	* No method by which to delete an URL, only disable/edit/hide it
-* Can view the number of visits to an URL; my first time using a JOIN in MySQL (thanks Stan!):
-	* $listurls = mysql_query("SELECT urls.*, count(visits.id) AS visitors FROM urls INNER JOIN visits ON visits.id = urls.id GROUP BY visits.id ORDER BY visitors $sorthow LIMIT $limit", $link);
+Allows an administrator to search and sort URLs by all of their different characteristics/fields pretty easily
+* Stores search/sort methods in cookies so refreshes of the page do not wipe out the search/sort values
+
+Gives the ability to quickly/easily disable a spam/malicious/bad/whatever URL
+* Clicking the IP address of the creator of a bad URL allows you to quickly disable all URLs created by that IP address
+* Statuses are:
+	* 0 - disabled
+	* 1 - active (default)
+	* -1 - "hidden" (returns 404; can only be set by admin) 
+
+Lets an administrator edit the details of any specific URL
+* No method by which to delete an URL, only disable/edit/hide it
+
+Can view the number of visits to an URL; my first time using a JOIN in MySQL (thanks Stan!):
+* $listurls = mysql_query("SELECT urls.*, count(visits.id) AS visitors FROM urls INNER JOIN visits ON visits.id = urls.id GROUP BY visits.id ORDER BY visitors $sorthow LIMIT $limit", $link);
 
 	mysql> SELECT urls.*, count(visits.id) AS visitors FROM urls INNER JOIN visits ON visits.id = urls.id GROUP BY visits.id ORDER BY visitors desc limit 1;
 	+----+----------------+-------------------------------------------------------------------+---------------+------------+--------+----------+
