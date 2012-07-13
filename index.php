@@ -2,10 +2,6 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="description" content="gaw.sh url shortener">
-<meta name="keywords" content="gaw.sh, url, shortener, gawsh">
-<meta name="robots" content="index, follow">
-<meta name="google-site-verification" content="5Ad3jzAKZZ9BWpHsNvlqmn_1_kYwf7tDTX9e5_oC-Ds">
 <link rel="stylesheet" type="text/css" href="/gawsh.css">
 <title>gaw.sh URL short...</title>
 </head>
