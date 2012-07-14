@@ -32,7 +32,7 @@ Checks URL domain name against:
 * URIBL
 	* http://www.uribl.com/
 
-Checks domain name IP address and authoritative name servers against:
+Checks domain names IP address(es) against:
 * Spamhaus ZEN (SBL, SBLCSS, XBL and PBL)
 	* http://www.spamhaus.org/zen/
 
@@ -167,7 +167,7 @@ Can view the number of visits to an URL; my first time using a JOIN in MySQL (th
 
 ## Notes
 
-* Attempting to visit a hidden/disabled URL will still add an entry for that URL to the "visits" table even though it's not active
+* Attempting to visit a hidden/disabled URL will still add an entry for that URL to the "visits" table even though it is not active
 * More to come at some point...
 
 ---------------------------------------
