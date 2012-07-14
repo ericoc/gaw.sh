@@ -90,6 +90,10 @@ while ($row = mysql_fetch_array($geturls)) {
 	}
 }
 
+// Close MySQL connection
+mysql_close($link);
+
+// Show final results
 if ($debug) {
 	$endtime = microtime(true);
 	$howlong = $endtime - $starttime;
@@ -101,8 +105,5 @@ if ($debug) {
 </html>
 END;
 }
-
-// Close MySQL connection
-mysql_close($link);
 
 ?>
