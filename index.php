@@ -23,9 +23,6 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		$url = 'http://' . $url;
 	}
 
-	// Determine domain name
-	$domain = parse_url($url, PHP_URL_HOST);
-
 	// Trim the alias, if one was submitted
 	if ( (isset($_POST['alias'])) && (!empty($_POST['alias'])) ) {
 		$alias = trim(strtolower($_POST['alias']));
@@ -39,28 +36,13 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 	if ( (!empty($alias)) && (!preg_match('/^[a-z0-9]+$/i', $alias)) ) {
 		$error = 'Invalid alias';
 
-	// Check if URL is dumb and make sure it exists
-	} elseif ( (isDumb($domain)) || (!isLegit($url)) ) {
-		$error = 'Invalid URL';
-
-	// Check URL against Spamhaus' DBL
-	} elseif (isDBL($domain)) {
-		$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/answers.lasso?section=Spamhaus%20DBL">blacklisted</a>)';
-
-	// Check URL against SURBL
-	} elseif (isSURBL($domain)) {
-		$error = 'Invalid URL (<a href="http://www.surbl.org/faqs">blacklisted</a>)';
-
-	// Check URL against URIBL
-	} elseif (isURIBL($domain)) {
-		$error = 'Invalid URL (<a href="http://www.uribl.com/about.shtml">blacklisted</a>)';
-
-	// Check URL against Spamhaus' ZEN
-	} elseif (isZEN($domain)) {
-		$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/index.lasso">blacklisted</a>)';
-
-	// Move on with possibly adding URL
+	// Run blacklist checks
 	} else {
+		$error = checkURL($url);
+	}
+
+	// Move on with possibly adding URL if there are no errors
+	if ( (!isset($error)) || (empty($error)) )  {
 
 		// Connect to MySQL and choose database
 		$link = mysql_connect($sqlhost, $sqluser, $sqlpass) OR die('Cannot connect to DB!');
@@ -81,7 +63,7 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 			}
 		}
 
-		// Add the URL to the database if there are not any errors
+		// Add the URL to the database if there are still not any errors
 		if ( (!isset($error)) && (mysql_query("INSERT INTO `urls` VALUES ('0', '$alias', '$url', '$ip', '$time', '1')", $link)) ) {
 
 			// Determine the short URL that we're going to display
