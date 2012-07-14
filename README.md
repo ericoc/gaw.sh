@@ -141,14 +141,15 @@ Allows an administrator to search and sort URLs by all of their different charac
 * Stores search/sort methods in cookies so refreshes of the page do not wipe out the search/sort values
 
 Gives the ability to quickly/easily disable a spam/malicious/bad/whatever URL
-* Clicking the IP address of the creator of a bad URL allows you to quickly disable all URLs created by that IP address
+* Clicking the status ("Active" or "Disabled") of a URL allows to you quickly enable/disable a URL
+* Clicking the IP address of the creator of a bad URL allows you to quickly disable any and all URLs created by that IP address
+
+Lets an administrator edit the details of any specific/individual URL
+* No method by which to delete an URL from the table or database entirely, only disable/edit/hide it
 * Statuses are:
 	* 0 - disabled
 	* 1 - active (default)
-	* -1 - "hidden" (returns 404; can only be set by admin) 
-
-Lets an administrator edit the details of any specific URL
-* No method by which to delete an URL, only disable/edit/hide it
+	* -1 - "hidden" (returns 404; can only be set by admin)
 
 Can view the number of visits to an URL; my first time using a JOIN in MySQL (thanks Stan!):
 
@@ -161,6 +162,11 @@ Can view the number of visits to an URL; my first time using a JOIN in MySQL (th
 	|  3 | linodereferral | http://www.linode.com/?r=f9976de410ab39ee8e022d5bcc9ad24c6df18536 | 71.197.190.30 | 1323044415 | 1      |       52 |
 	+----+----------------+-------------------------------------------------------------------+---------------+------------+--------+----------+
 	1 row in set (0.01 sec)
+
+## Notes
+
+* Attempting to visit a hidden/disabled URL will still add an entry for that URL to the "visits" table even though it's not active
+* More to come at some point...
 
 ---------------------------------------
 
