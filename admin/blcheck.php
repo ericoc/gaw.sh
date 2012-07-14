@@ -2,7 +2,19 @@
 
 // Turn on debugging if asked to
 if ( (isset($_GET['debug'])) && ($_GET['debug'] == 'yes') ) {
+	$starttime = microtime(true);
         $debug = TRUE;
+	echo <<< END
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" type="text/css" href="/gawsh.css">
+<title>gaw.sh URL short... blcheck</title>
+</head>
+<body>
+END;
+
 } else {
 	$debug = FALSE;
 }
@@ -72,15 +84,22 @@ while ($row = mysql_fetch_array($geturls)) {
 		$badurl++;
 
 		if ($debug) {
-			echo "$error<br>\n";
+			echo "<span id=\"error\">$error</span><br>\n";
 		}
 		$error = "";
 	}
 }
 
 if ($debug) {
+	$endtime = microtime(true);
+	$howlong = $endtime - $starttime;
 	echo "<br>Found $badurl bad URLs<br>\n";
+	echo "Took $howlong seconds<br>\n";
 	echo "Done.\n";
+	echo <<< END
+</body>
+</html>
+END;
 }
 
 // Close MySQL connection
