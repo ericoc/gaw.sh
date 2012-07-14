@@ -126,4 +126,40 @@ function isLegit ($url) {
 	}
 }
 
+// Master function to run all of the above checks against a URL
+function checkURL ($url) {
+
+	// Determine domain name
+	$domain = parse_url($url, PHP_URL_HOST);
+
+	// Check if domain is on the dumb list
+	if (isDumb($domain)) {
+		$error = 'Invalid URL (bad domain name)';
+
+	// Check that the URL actually works
+	} elseif (!isLegit($url)) {
+		$error = 'Invalid URL (not found)';
+
+	// Check URL against Spamhaus' DBL
+	} elseif (isDBL($domain)) {
+		$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/answers.lasso?section=Spamhaus%20DBL">blacklisted</a>)';
+
+	// Check URL against SURBL
+	} elseif (isSURBL($domain)) {
+		$error = 'Invalid URL (<a href="http://www.surbl.org/faqs">blacklisted</a>)';
+
+	// Check URL against URIBL
+	} elseif (isURIBL($domain)) {
+		$error = 'Invalid URL (<a href="http://www.uribl.com/about.shtml">blacklisted</a>)';
+
+	// Check URL against Spamhaus' ZEN
+	} elseif (isZEN($domain)) {
+		$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/index.lasso">blacklisted</a>)';
+	}
+
+	if ( (isset($error)) && (!empty($error)) ) {
+		return $error;
+	}
+}
+
 ?>
