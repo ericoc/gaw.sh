@@ -78,55 +78,44 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 			// Error out if alias has been used before
 			if (mysql_num_rows($checkalias) >= '1') {
 				$error = 'Alias taken';
-
-			} else {
-				goto addurl;
 			}
+		}
 
-		// Add the URL to the database otherwise
-		} else {
+		// Add the URL to the database if there are not any errors
+		if ( (!isset($error)) && (mysql_query("INSERT INTO `urls` VALUES ('0', '$alias', '$url', '$ip', '$time', '1')", $link)) ) {
 
-			addurl:
+			// Determine the short URL that we're going to display
+			if ( (isset($alias)) && (!empty($alias)) ) {
+				$shorturl = $alias;
 
-			if (mysql_query("INSERT INTO `urls` VALUES ('0', '$alias', '$url', '$ip', '$time', '1')", $link)) {
+			// Generate an alias if none was given
+			} else {
 
-				// Determine the short URL that we're going to display
-				if ( (isset($alias)) && (!empty($alias)) ) {
-					$shorturl = $alias;
+				// Get the database ID of the newly created URL
+				$id = mysql_insert_id();
 
-				// Generate an alias if none was given
-				} else {
+				// Check if the alias we're generating has been used before (in case someone manually created this alias in the past)
+				$aliasexists = TRUE;
+				$a = 0;
+				while ($aliasexists == TRUE) {
 
-					// Get the database ID of the newly created URL
-					$id = mysql_insert_id();
+					// Create a small alias simply using the database ID if it's the first time going through the loop
+					if ($a == 0) {
+						$shorturl = base_convert($id, 10, 36);
 
-					// Check if the alias we're generating has been used before (in case someone manually created this alias in the past)
-					$aliasexists = TRUE;
-					$a = 0;
-					while ($aliasexists == TRUE) {
+					// Prepend a random number, then append the UNIX timestamp to the database ID, and convert that to base36, if we're going through the loop more than once
+					} else {
+						$shorturl = base_convert(rand(0,10).$id.time(), 10, 36);
+					}
 
-						// Create a small alias simply using the database ID if it's the first time going through the loop
-						if ($a == 0) {
-							$shorturl = base_convert($id, 10, 36);
-
-						// Prepend a random number, then append the UNIX timestamp to the database ID, and convert that to base36, if we're going through the loop more than once
-						} else {
-							$shorturl = base_convert(rand(0,10).$id.time(), 10, 36);
-						}
-
-						// See if this alias exists in the database any where; if not, create it. Otherwise, re-loop
-						if (mysql_num_rows(mysql_query("SELECT `id` FROM `urls` WHERE `alias` = '$shorturl'", $link)) == 0) {
-							$aliasexists = FALSE;
-							mysql_query("UPDATE `urls` SET `alias` = '$shorturl' WHERE `id` = '$id'", $link); 
-						} else {
-							$a++;
-						}
+					// See if this alias exists in the database any where; if not, create it. Otherwise, re-loop
+					if (mysql_num_rows(mysql_query("SELECT `id` FROM `urls` WHERE `alias` = '$shorturl'", $link)) == 0) {
+						$aliasexists = FALSE;
+						mysql_query("UPDATE `urls` SET `alias` = '$shorturl' WHERE `id` = '$id'", $link); 
+					} else {
+						$a++;
 					}
 				}
-
-			// If adding the URL to the database fails, something crazy is up
-			} else {
-				echo mysql_error();
 			}
 		}
 
