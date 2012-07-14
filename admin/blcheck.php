@@ -34,8 +34,8 @@ $geturls = mysql_query("SELECT id, alias, url FROM `urls` WHERE `status` = '1'",
 // Start out and begin counting bad URLs
 if ($debug) {
 	echo "Checking " . mysql_num_rows($geturls) . " URLs...<br><br>\n";
+	$badurls = 0;
 }
-$badurls = 0;
 
 // Loop through every enabled URL
 while ($row = mysql_fetch_array($geturls)) {
@@ -55,14 +55,13 @@ while ($row = mysql_fetch_array($geturls)) {
 
 	// If the URL is bad, do something (increment the amount of fails and eventually disable entirely?)
 	if ( (isset($error)) && (!empty($error)) ) {
-		$badurls++;
 
 		// Tell us what the error was if debug is on
 		if ($debug) {
+			$badurls++;
 			echo "<span id=\"error\">$error</span><br>\n";
 		}
 
-		// Empty the variable so we can start the loop over
 		$error = "";
 
 	// Tell us the URL is okay if so and debug is on
