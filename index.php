@@ -55,8 +55,8 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 	} elseif (isURIBL($domain)) {
 		$error = 'Invalid URL (<a href="http://www.uribl.com/about.shtml">blacklisted</a>)';
 
-	// Check URL and its nameservers against Spamhaus' ZEN
-	} elseif ( (isZEN($domain)) || (isZENNS($domain)) ) {
+	// Check URL against Spamhaus' ZEN
+	} elseif (isZEN($domain)) {
 		$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/index.lasso">blacklisted</a>)';
 
 	// Move on with possibly adding URL

@@ -66,6 +66,9 @@ function isZEN ($domain) {
 	}
 }
 
+/*
+Commenting this out for now since it might have been over-kill; was catching anything using Cloudflare's name servers for example
+
 // Create a function to check if the authoritative nameservers of a URL are on Spamhaus' ZEN
 function isZENNS ($domain) {
 
@@ -79,13 +82,14 @@ function isZENNS ($domain) {
 		}
 	}
 }
+*/
 
 // Create a function to check if a URL is dumb
 function isDumb ($domain) {
 
 	// Create an array of dumb domain names from file
-        $dumbfile = $_SERVER['DOCUMENT_ROOT'] . '/admin/dumb.txt';
-        $dumb = file($dumbfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+	$dumbfile = $_SERVER['DOCUMENT_ROOT'] . '/admin/dumb.txt';
+	$dumb = file($dumbfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 	// Check the domain name in question against list of dumb domains
 	if (array_search(strtolower($domain), $dumb)) {
@@ -103,8 +107,9 @@ function isLegit ($url) {
 	curl_setopt($c, CURLOPT_NOBODY, 1); // screw the body
 	curl_setopt($c, CURLOPT_USERAGENT, 'GAW.SH URL Shortener - http://gaw.sh/'); // friendly user agent/browser string
 	curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); // get the thing
-	curl_setopt($c, CURLOPT_CONNECTTIMEOUT, '1'); // short timeouts
-	curl_setopt($c, CURLOPT_TIMEOUT, '1');
+	curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 1); // short timeouts
+	curl_setopt($c, CURLOPT_TIMEOUT, 1);
+	curl_setopt($c, CURLOPT_DNS_CACHE_TIMEOUT, 3600); // Cache DNS stuffs for 5 minutes to see if it makes things faster
 	curl_setopt($c, CURLOPT_DNS_USE_GLOBAL_CACHE, 1); // should make dns lookup faster?
 	curl_setopt($c, CURLOPT_NOSIGNAL, 1); // "ignore any cURL function that causes a signal to be sent to the PHP process."
 	curl_setopt($c, CURLOPT_SSL_VERIFYPEER, 0); // let me shorten urls even if that have a bogus ssl cert

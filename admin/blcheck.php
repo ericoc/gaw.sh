@@ -54,6 +54,7 @@ while ($row = mysql_fetch_array($geturls)) {
 	if (isDumb(strtolower($domain))) {
 		$error = 'dumb domain';
 
+	// Check if URL is legit/works
 	} elseif (!isLegit($url)) {
 		$error = 'not legit';
 
@@ -70,8 +71,8 @@ while ($row = mysql_fetch_array($geturls)) {
 		$error = 'uribl';
 
 	// Check URL and its nameservers against Spamhaus' ZEN
-	} elseif ( (isZEN($domain)) || (isZENNS($domain)) ) {
-		$error = 'zen/ns';
+	} elseif (isZEN($domain)) {
+		$error = 'spamhaus zen';
 
 	} else {
 		if ($debug) {
@@ -79,7 +80,7 @@ while ($row = mysql_fetch_array($geturls)) {
 		}
 	}
 
-	// If the URL is bad, do something (either increment the amount of fails or disable entirely?)
+	// If the URL is bad, do something (increment the amount of fails and eventually disable entirely?)
 	if ( (isset($error)) && (!empty($error)) ) {
 		$badurl++;
 
