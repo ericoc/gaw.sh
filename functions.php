@@ -84,7 +84,8 @@ function isZENNS ($domain) {
 function isDumb ($domain) {
 
 	// Create an array of dumb domain names from file
-	$dumb = file('admin/dumb.txt', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $dumbfile = $_SERVER['DOCUMENT_ROOT'] . '/admin/dumb.txt';
+        $dumb = file($dumbfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 	// Check the domain name in question against list of dumb domains
 	if (array_search(strtolower($domain), $dumb)) {

@@ -8,8 +8,8 @@ if ( (isset($_GET['debug'])) && ($_GET['debug'] == 'yes') ) {
 }
 
 // Include configuration and functions files
-include('config.php'); // MySQL credentials and user variables
-include('functions.php'); // blacklist/URL verification checks
+include('../config.php'); // MySQL credentials and user variables
+include('../functions.php'); // blacklist/URL verification checks
 
 // Connect to MySQL and choose database
 $link = mysql_connect($sqlhost, $sqluser, $sqlpass) OR die('Cannot connect to DB!');
