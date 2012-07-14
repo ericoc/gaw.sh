@@ -1,4 +1,3 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -13,9 +12,8 @@
 /* Process form if it was submitted */
 if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'http://') ) {
 
-	// Include configuration and functions files
+	// Include configuration
 	include('config.php'); // MySQL credentials, user variables, and sqlsafe() function
-	include('functions.php'); // blacklist/URL verification checks
 
 	// Trim submitted URL, throw "http://" on the front if it doesn't start with either http:// or https://
 	$url = trim($_POST['url']);
@@ -36,8 +34,9 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 	if ( (!empty($alias)) && (!preg_match('/^[a-z0-9]+$/i', $alias)) ) {
 		$error = 'Invalid alias';
 
-	// Run blacklist checks
+	// Include functions with blacklist/URL checks and run the URL through said checks
 	} else {
+		include('functions.php');
 		$error = checkURL($url);
 	}
 
