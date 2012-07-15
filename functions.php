@@ -136,10 +136,6 @@ function checkURL ($url) {
 	if (isDumb($domain)) {
 		$error = 'Invalid URL (bad domain name)';
 
-	// Check that the URL actually works
-	} elseif (!isLegit($url)) {
-		$error = 'Invalid URL (not found)';
-
 	// Check URL against Spamhaus' DBL
 	} elseif (isDBL($domain)) {
 		$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/answers.lasso?section=Spamhaus%20DBL">blacklisted</a>)';
@@ -155,6 +151,10 @@ function checkURL ($url) {
 	// Check URL against Spamhaus' ZEN
 	} elseif (isZEN($domain)) {
 		$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/index.lasso">blacklisted</a>)';
+
+        // Check that the URL actually works
+        } elseif (!isLegit($url)) {
+                $error = 'Invalid URL (not found)';
 	}
 
 	if ( (isset($error)) && (!empty($error)) ) {
