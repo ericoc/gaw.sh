@@ -9,6 +9,5 @@
  * Jason
  * [Rick](https://github.com/movesmyers)
  * [Lee](https://github.com/leematos)
- * 
  * neilforobot 
  * Apple, Inc.
