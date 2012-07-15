@@ -6,25 +6,27 @@ error_reporting('E_ALL');
 // Include configuration
 include('../config.php');
 
-// Create function to display the status of a URL
+// Create function to display the status of a URL and link to change its status
 function displayStatus ($id, $status) {
 
 	switch ($status) {
 		case 0:
 			$color = 'red';
 			$name = 'Disabled';
-			$out = "<a onclick=\"return confirm('Are you sure?');\" href=\"/admin/?do=enable&id=$id\"><font color=\"$color\">$name</font></a>";
+			$watdo = 'enable';
 		break;
 		case 1:
 			$color = 'green';
 			$name = 'Active';
-			$out = "<a onclick=\"return confirm('Are you sure?');\" href=\"/admin/?do=disable&id=$id\"><font color=\"$color\">$name</font></a>";
+			$watdo = 'disable';
 		break;
 		default:
 			$color = 'orange';
 			$name = 'Hidden';
-			$out = "<a onclick=\"return confirm('Are you sure?');\" href=\"/admin/?do=enable&id=$id\"><font color=\"$color\">$name</font></a>";
+			$watdo = 'enable';
 	}
+
+	$out = "<a onclick=\"return confirm('Are you sure?');\" href=\"/admin/?do=$watdo&id=$id\"><font color=\"$color\">$name</font></a>";
 
 	return $out;
 }
