@@ -129,9 +129,9 @@ if (isset($_GET['do'])) {
 
 	if ( ($_GET['do'] == 'search') && (isset($_POST['value'])) && (!empty($_POST['value'])) ) {
 
-		$field = sqlsafe($_POST['field']);
-		$how = sqlsafe($_POST['how']);
-		$value = sqlsafe($_POST['value']);
+		$field = mysql_real_escape_string($_POST['field']);
+		$how = mysql_real_escape_string($_POST['how']);
+		$value = mysql_real_escape_string($_POST['value']);
 
 		// Set cookies to save search query
 		setcookie('searchfield', $field);
@@ -145,11 +145,11 @@ if (isset($_GET['do'])) {
 	} elseif ( ($_GET['do'] == 'edit') && (isset($_POST['editid'])) && (is_numeric($_POST['editid'])) ) {
 
 		// Make variables workable
-		$id = sqlsafe($_POST['editid']);
-		$editalias = sqlsafe($_POST['editalias']);
-		$editurl = sqlsafe($_POST['editurl']);
-		$editip = sqlsafe($_POST['editip']);
-		$editstatus = sqlsafe($_POST['editstatus']);
+		$id = mysql_real_escape_string($_POST['editid']);
+		$editalias = mysql_real_escape_string($_POST['editalias']);
+		$editurl = mysql_real_escape_string($_POST['editurl']);
+		$editip = mysql_real_escape_string($_POST['editip']);
+		$editstatus = mysql_real_escape_string($_POST['editstatus']);
 
 		$editquery = "UPDATE `urls` SET `alias` = '$editalias', `url` = '$editurl', `ip` = '$editip', `status` = '$editstatus' WHERE `id` = '$id'";
 		mysql_query($editquery);
@@ -158,7 +158,7 @@ if (isset($_GET['do'])) {
 
 	} elseif ( ($_GET['do'] == 'enable') && (isset($_GET['id'])) && (is_numeric($_GET['id'])) ) {
 
-		$id = sqlsafe($_GET['id']);
+		$id = mysql_real_escape_string($_GET['id']);
 		$enable = "UPDATE `urls` SET `status` = '1' WHERE `id` = '$id'";
 		mysql_query($enable);
 
@@ -166,7 +166,7 @@ if (isset($_GET['do'])) {
 
 	} elseif ( ($_GET['do'] == 'disable') && (isset($_GET['id'])) && (is_numeric($_GET['id'])) ) {
 
-		$id = sqlsafe($_GET['id']);
+		$id = mysql_real_escape_string($_GET['id']);
 		$disable = "UPDATE `urls` SET `status` = '0' WHERE `id` = '$id'";
 		mysql_query($disable);
 
@@ -174,7 +174,7 @@ if (isset($_GET['do'])) {
 
 	} elseif ( ($_GET['do'] == 'disableip') && (isset($_GET['ip'])) ) {
 
-		$disableip = sqlsafe($_GET['ip']);
+		$disableip = mysql_real_escape_string($_GET['ip']);
 		$disable = "UPDATE `urls` SET `status` = '0' WHERE `ip` = '$disableip'";
 		mysql_query($disable);
 	}
@@ -183,9 +183,9 @@ if (isset($_GET['do'])) {
 // Search if cookie present
 if ( (isset($_COOKIE['searchfield'])) && (isset($_COOKIE['searchhow'])) && (isset($_COOKIE['searchvalue'])) && (!empty($_COOKIE['searchvalue'])) && (!isset($_POST['value'])) ) {
 
-		$field = sqlsafe($_COOKIE['searchfield']);
-		$how = sqlsafe($_COOKIE['searchhow']);
-		$value = sqlsafe($_COOKIE['searchvalue']);
+		$field = mysql_real_escape_string($_COOKIE['searchfield']);
+		$how = mysql_real_escape_string($_COOKIE['searchhow']);
+		$value = mysql_real_escape_string($_COOKIE['searchvalue']);
 
 		$listurls = mysql_query(searchURL($field, $how, $value), $link);
 }

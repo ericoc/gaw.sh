@@ -14,7 +14,7 @@
 if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'http://') ) {
 
 	// Require configuration/settings
-	require('config.php'); // MySQL credentials, user variables, and sqlsafe() function
+	require('config.php'); // MySQL credentials and user variables
 
 	// Trim submitted URL, throw "http://" on the front if it doesn't start with either http:// or https://
 	$url = trim($_POST['url']);
@@ -49,8 +49,8 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		mysql_select_db($sqldb, $link);
 
 		// Make URL and alias safe for MySQL
-		$url = sqlsafe($url);
-		$alias = sqlsafe($alias);
+		$url = mysql_real_escape_string($url);
+		$alias = mysql_real_escape_string($alias);
 		// Check if the alias has been used already
 		if ( (isset($alias)) && (!empty($alias)) ) {
 

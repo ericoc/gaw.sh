@@ -37,7 +37,7 @@ if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 	mysql_select_db($sqldb, $link);
 
 	// Parse URL alias
-	$alias = sqlsafe(trim($_GET['x']));
+	$alias = mysql_real_escape_string(trim($_GET['x']));
 
 	// Check if the alias exists
 	$check = mysql_query("SELECT id, url, status FROM `urls` WHERE `alias` = '$alias'", $link);
