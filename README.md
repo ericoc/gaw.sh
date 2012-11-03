@@ -31,7 +31,7 @@ Checks URL domain name against:
 	* http://www.surbl.org/
 * URIBL
 	* http://www.uribl.com/
-* Google Safe Browsing api
+* Google Safe Browsing API
 	* https://developers.google.com/safe-browsing/
 
 Checks domain names IP address(es) against:
