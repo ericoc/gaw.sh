@@ -13,8 +13,8 @@
 /* Process form if it was submitted */
 if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'http://') ) {
 
-	// Include configuration
-	include('config.php'); // MySQL credentials, user variables, and sqlsafe() function
+	// Require configuration/settings
+	require('config.php'); // MySQL credentials, user variables, and sqlsafe() function
 
 	// Trim submitted URL, throw "http://" on the front if it doesn't start with either http:// or https://
 	$url = trim($_POST['url']);
@@ -35,9 +35,9 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 	if ( (!empty($alias)) && (!preg_match('/^[a-z0-9]+$/i', $alias)) ) {
 		$error = 'Invalid alias';
 
-	// Include functions with blacklist/URL checks and run the URL through said checks
+	// Require functions with blacklist/URL checks and run the URL through said checks
 	} else {
-		include('functions.php');
+		require('functions.php');
 		$error = checkURL($url);
 	}
 
@@ -51,7 +51,6 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		// Make URL and alias safe for MySQL
 		$url = sqlsafe($url);
 		$alias = sqlsafe($alias);
-
 		// Check if the alias has been used already
 		if ( (isset($alias)) && (!empty($alias)) ) {
 
@@ -66,7 +65,7 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		// Add the URL to the database if there are still not any errors
 		if ( (!isset($error)) && (mysql_query("INSERT INTO `urls` VALUES ('0', '$alias', '$url', '$ip', '$time', '1')", $link)) ) {
 
-			// Determine the short URL that we're going to display
+			// Determine the short URL that we are going to display
 			if ( (isset($alias)) && (!empty($alias)) ) {
 				$shorturl = $alias;
 
@@ -76,24 +75,24 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 				// Get the database ID of the newly created URL
 				$id = mysql_insert_id();
 
-				// Check if the alias we're generating has been used before (in case someone manually created this alias in the past)
-				$aliasexists = TRUE;
+				// Check if the alias we are generating has been used before (in case someone manually created this alias in the past)
+				$aliasexists = 'TRUE';
 				$a = 0;
-				while ($aliasexists == TRUE) {
+				while ($aliasexists == 'TRUE') {
 
-					// Create a small alias simply using the database ID if it's the first time going through the loop
-					if ($a == 0) {
+					// Create a small alias simply using the database ID if it is the first time going through the loop
+					if ($a == '0') {
 						$shorturl = base_convert($id, 10, 36);
 
-					// Prepend a random number, then append the UNIX timestamp to the database ID, and convert that to base36, if we're going through the loop more than once
+					// Prepend a random number, then append the UNIX timestamp to the database ID, and convert that to base36, if we are going through the loop more than once
 					} else {
 						$shorturl = base_convert(rand(0,10).$id.time(), 10, 36);
 					}
 
 					// See if this alias exists in the database any where; if not, create it. Otherwise, re-loop
-					if (mysql_num_rows(mysql_query("SELECT `id` FROM `urls` WHERE `alias` = '$shorturl'", $link)) == 0) {
+					if (mysql_num_rows(mysql_query("SELECT `id` FROM `urls` WHERE `alias` = '$shorturl'", $link)) == '0') {
 						$aliasexists = FALSE;
-						mysql_query("UPDATE `urls` SET `alias` = '$shorturl' WHERE `id` = '$id'", $link); 
+						mysql_query("UPDATE `urls` SET `alias` = '$shorturl' WHERE `id` = '$id'", $link);
 					} else {
 						$a++;
 					}

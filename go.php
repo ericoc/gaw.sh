@@ -1,8 +1,5 @@
 <?php
 
-// Turn on crazy error checkage
-error_reporting('E_ALL');
-
 // Create function to set header and display error message on bad URLs
 function showError ($error) {
 
@@ -32,8 +29,8 @@ END;
 // Start the search for the URL if an alias was given
 if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 
-	// Include configuration; don't need functions.php here
-	include('config.php');
+	// Require configuration; do not need functions.php here
+	require('config.php');
 
 	// Connect to MySQL and choose database
 	$link = mysql_connect($sqlhost, $sqluser, $sqlpass) OR die('Cannot connect to DB!');
@@ -47,7 +44,7 @@ if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 
 	// Get ID, long URL, and status if the alias exists
 	if (mysql_num_rows($check) >= 1) {
-		
+
 		while ($row = mysql_fetch_array($check)) {
 			$id = $row['id'];
 			$to = $row['url'];
@@ -62,11 +59,11 @@ if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 	mysql_close($link);
 }
 
-// Redirect to long URL if it was found and is active; show error if it's been disabled/weird status/not found
-if ( (isset($to)) && ($status == 1) ) {
+// Redirect to long URL if it was found and is active; show error message if it has been disabled, is in a weird status, or was not found
+if ( (isset($to)) && ($status == '1') ) {
 	header("Location: $to", TRUE, 301);
 
-} elseif ( (isset($to)) && ($status == 0) ) {
+} elseif ( (isset($to)) && ($status == '0') ) {
 	showError('410 gone');
 
 } elseif ($alias == '403') {

@@ -1,10 +1,7 @@
 <?php
 
-// Show all errors
-error_reporting('E_ALL');
-
-// Include configuration
-include('../config.php');
+// Require configuration
+require('../config.php');
 
 // Create function to display the status of a URL and link to change its status
 function displayStatus ($id, $status) {
@@ -193,7 +190,7 @@ if ( (isset($_COOKIE['searchfield'])) && (isset($_COOKIE['searchhow'])) && (isse
 		$listurls = mysql_query(searchURL($field, $how, $value), $link);
 }
 
-// Default query if we're not searching, and clear cookies
+// Default query if we are not searching, and clear cookies
 if (!isset($listurls)) {
 	if ($sortby == 'visits') {
 		$listurls = mysql_query("SELECT urls.*, count(visits.id) AS visitors FROM urls INNER JOIN visits ON visits.id = urls.id GROUP BY visits.id ORDER BY visitors $sorthow LIMIT $limit", $link); 
@@ -222,7 +219,7 @@ $counturls = mysql_num_rows($listurls);
 <h1><a href="/admin/">gaw.sh admin</a></h1><br>
 <?php
 
-// Say so if there's no results
+// Say so if there are no results
 if ($counturls == 0) {
 	echo "<i>No results</i><br><br>\n";
 
@@ -253,7 +250,7 @@ if ($counturls == 0) {
 		echo "<td align=\"center\"><a href=\"?do=edit&id=" . $row['id'] . "#edit\">" . $row['id'] . "</a></td>\n";
 		echo "<td align=\"center\"><a href=\"/" . $row['alias'] . "\" target=\"_blank\">" . $row['alias'] . "</a></td>\n";
 
-		// Only show the first 50 characters of the original URL if it's longer than 50 characters
+		// Only show the first 50 characters of the original URL if it is longer than 50 characters
 		echo '<td><a href="' . $row['url'] . '" target="_blank">';
 		if (strlen($row['url']) > 50) {
 			echo substr($row['url'], 0, 50) . '...';
