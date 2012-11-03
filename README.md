@@ -31,6 +31,8 @@ Checks URL domain name against:
 	* http://www.surbl.org/
 * URIBL
 	* http://www.uribl.com/
+* Google Safe Browsing api
+	* https://developers.google.com/safe-browsing/
 
 Checks domain names IP address(es) against:
 * Spamhaus ZEN (SBL, SBLCSS, XBL and PBL)
