@@ -64,7 +64,7 @@ function searchURL ($field, $how, $value) {
 	}
 
 	$query .= " ORDER BY `$sortby` $sorthow LIMIT $limit";
-	echo $query;
+
 	$st = $link->prepare($query);
 	$st->bindValue(1, $value);
 	$st->execute();

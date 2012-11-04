@@ -44,15 +44,15 @@ CREATE TABLE IF NOT EXISTS `urls` (
   `time` varchar(15) NOT NULL DEFAULT '',
   `status` varchar(2) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `id_2` (`id`),
-  UNIQUE KEY `alias_2` (`alias`),
   KEY `id` (`id`),
   KEY `alias` (`alias`),
-  KEY `id_3` (`id`),
-  KEY `id_4` (`id`),
-  KEY `alias_3` (`alias`),
-  KEY `id_5` (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `urls` (`id`, `alias`, `url`, `ip`, `time`, `status`) VALUES
+(1, 'admin', '', '127.0.0.1', '1323141765', '-1'),
+(2, '404', '', '127.0.0.1', '1323141766', '-1'),
+(3, '403', '', '127.0.0.1', '1323141767', '-1');
 
 -- --------------------------------------------------------
 

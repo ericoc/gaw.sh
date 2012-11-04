@@ -8,15 +8,15 @@ function isGSB ($domain, $gsbkey) {
 
 	// Perform an HTTP GET request to the Google Safe Browsing API and make a decision based on response code
 	$c = curl_init();
-	curl_setopt($c, CURLOPT_URL, $url); // url
-	curl_setopt($c, CURLOPT_HEADER, 1); // return the stuff
+	curl_setopt($c, CURLOPT_URL, $url);
+	curl_setopt($c, CURLOPT_HEADER, 1);
 	curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($c, CURLOPT_NOBODY, 1); // screw the body
-	curl_setopt($c, CURLOPT_USERAGENT, 'GAW.SH URL Shortener - http://gaw.sh/'); // friendly user agent/browser string
-	curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 1); // short timeouts
+	curl_setopt($c, CURLOPT_NOBODY, 1);
+	curl_setopt($c, CURLOPT_USERAGENT, 'GAW.SH URL Shortener - http://gaw.sh/');
+	curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 2);
 	curl_setopt($c, CURLOPT_TIMEOUT, 2);
 	$r = curl_exec($c);
-	$code = curl_getinfo($c, CURLINFO_HTTP_CODE); // get the http code returned by our head requests
+	$code = curl_getinfo($c, CURLINFO_HTTP_CODE);
 	curl_close($c);
 
 	// A 200 HTTP response code indicates that the website is involved with phishing or malware
@@ -75,7 +75,7 @@ function isURIBL ($domain) {
 // Create a function to check if an domain is on Spamhaus' ZEN
 function isZEN ($domain) {
 
-	// Resolve the domain name; this is broken if it's an IP address instead of a domain name - need to fix
+	// Resolve the domain name to an IPv4 address
 	$lookup = dns_get_record($domain, DNS_A);
 
 	// Loop through each IP address
@@ -115,7 +115,7 @@ function isZENNS ($domain) {
 function isDumb ($domain) {
 
 	// Create an array of dumb domain names from file
-	$dumbfile = $_SERVER['DOCUMENT_ROOT'] . '/admin/dumb.txt';
+	$dumbfile = $_SERVER['DOCUMENT_ROOT'] . 'admin/dumb.txt';
 	$dumb = file($dumbfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 	// Check the domain name in question against list of dumb domains
@@ -127,25 +127,22 @@ function isDumb ($domain) {
 // Create a function to check if a URL is legit
 function isLegit ($url) {
 
-	// Hit the URL with a HEAD request using cURL to make sure it connects/works
+	// Hit the URL with an HTTP request using cURL to make sure it connects/works
 	$c = curl_init();
-	curl_setopt($c, CURLOPT_URL, $url); // url
-	curl_setopt($c, CURLOPT_HEADER, 1); // head request
-	curl_setopt($c, CURLOPT_NOBODY, 1); // screw the body
-	curl_setopt($c, CURLOPT_USERAGENT, 'GAW.SH URL Shortener - http://gaw.sh/'); // friendly user agent/browser string
-	curl_setopt($c, CURLOPT_RETURNTRANSFER, 1); // get the thing
-//	curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 1); // short timeouts
+	curl_setopt($c, CURLOPT_URL, $url);
+	curl_setopt($c, CURLOPT_HEADER, 1);
+	curl_setopt($c, CURLOPT_NOBODY, 1);
+	curl_setopt($c, CURLOPT_USERAGENT, 'GAW.SH URL Shortener - http://gaw.sh/');
+	curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 2);
 	curl_setopt($c, CURLOPT_TIMEOUT, 2);
-//	curl_setopt($c, CURLOPT_DNS_CACHE_TIMEOUT, 3600); // Cache DNS stuffs for 5 minutes to see if it makes things faster
-//	curl_setopt($c, CURLOPT_DNS_USE_GLOBAL_CACHE, 1); // should make dns lookup faster?
-	curl_setopt($c, CURLOPT_NOSIGNAL, 1); // "ignore any cURL function that causes a signal to be sent to the PHP process."
-	curl_setopt($c, CURLOPT_SSL_VERIFYPEER, 0); // let me shorten urls even if that have a bogus ssl cert
+	curl_setopt($c, CURLOPT_SSL_VERIFYPEER, 0); // Do not fail on "invalid" SSL certificates
 	curl_setopt($c, CURLOPT_SSL_VERIFYHOST, 0);
 	$r = curl_exec($c);
-	$code = curl_getinfo($c, CURLINFO_HTTP_CODE); // get the http code returned by our head requests
+	$code = curl_getinfo($c, CURLINFO_HTTP_CODE);
 	curl_close($c);
 
-	// As long as the URL exists, it's legit
+	// As long as the URL works and does not return 404/Not Found, it is legit
 	if ( ($code != '0') && ($code != '404') ) {
 		return TRUE;
 	} else {
@@ -186,11 +183,12 @@ function checkURL ($url) {
 	} elseif ( (!empty($gsbkey)) && (isGSB($domain, $gsbkey)) ) {
 		$error = 'Invalid URL (<a href="http://www.google.com/safebrowsing/diagnostic?site=' . $domain . '">blacklisted</a>)';
 
-        // Check that the URL actually works
-        } elseif (!isLegit($url)) {
-                $error = 'Invalid URL (not found)';
+	// Check that the URL actually works
+	} elseif (!isLegit($url)) {
+		$error = 'Invalid URL (not found)';
 	}
 
+	// Return any error
 	if ( (isset($error)) && (!empty($error)) ) {
 		return $error;
 	}

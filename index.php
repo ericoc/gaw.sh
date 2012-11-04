@@ -16,7 +16,7 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 	// Require configuration/settings
 	require('config.php'); // MySQL credentials and user variables
 
-	// Trim submitted URL, throw "http://" on the front if it doesn't start with either http:// or https://
+	// Trim submitted URL, throw "http://" on the front if it does not start with either http:// or https://
 	$url = trim($_POST['url']);
 	if (!preg_match('/^http(s)?:\/\//i', $url)) {
 		$url = 'http://' . $url;
@@ -117,7 +117,7 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 	if (isset($shorturl)) {
 		echo '<a id="url" href="/' . $shorturl . '">http://gaw.sh/' . $shorturl . '</a>';
 
-	// Show any errors
+	// Otherwise, show any errors
 	} elseif (isset($error)) {
 		echo '<span id="error">' . $error . '</span>';
 	}
