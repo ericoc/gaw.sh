@@ -45,25 +45,31 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 	if ( (!isset($error)) || (empty($error)) )  {
 
 		// Connect to MySQL and choose database
-		$link = mysql_connect($sqlhost, $sqluser, $sqlpass) OR die('Cannot connect to DB!');
-		mysql_select_db($sqldb, $link);
+		try {
+			$link = new PDO("mysql:host=$sqlhost;dbname=$sqldb", $sqluser, $sqlpass);
+		} catch (PDOException $e) {
+			die ("Cannot connect to DB! - $e");
+		}
 
-		// Make URL and alias safe for MySQL
-		$url = mysql_real_escape_string($url);
-		$alias = mysql_real_escape_string($alias);
 		// Check if the alias has been used already
 		if ( (isset($alias)) && (!empty($alias)) ) {
 
-			$checkalias = mysql_query("SELECT `id` FROM `urls` WHERE `alias` = '$alias'", $link);
+			$checkalias = $link->prepare("SELECT `id` FROM `urls` WHERE `alias` = ?");
+			$checkalias->bindValue(1, $alias, PDO::PARAM_STR);
+			$checkalias->execute();
 
 			// Error out if alias has been used before
-			if (mysql_num_rows($checkalias) >= '1') {
+			if ($checkalias->rowCount() >= 1) {
 				$error = 'Alias taken';
 			}
 		}
 
 		// Add the URL to the database if there are still not any errors
-		if ( (!isset($error)) && (mysql_query("INSERT INTO `urls` VALUES ('0', '$alias', '$url', '$ip', '$time', '1')", $link)) ) {
+		$addurl = $link->prepare("INSERT INTO `urls` VALUES ('0', ?, ?, '$ip', '$time', '1')");
+		$addurl->bindValue(1, $alias, PDO::PARAM_STR);
+		$addurl->bindValue(2, $url, PDO::PARAM_STR);
+
+		if ( (!isset($error)) && ($addurl->execute()) ) {
 
 			// Determine the short URL that we are going to display
 			if ( (isset($alias)) && (!empty($alias)) ) {
@@ -73,7 +79,7 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 			} else {
 
 				// Get the database ID of the newly created URL
-				$id = mysql_insert_id();
+				$id = $link->lastInsertId();
 
 				// Check if the alias we are generating has been used before (in case someone manually created this alias in the past)
 				$aliasexists = 'TRUE';
@@ -90,9 +96,12 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 					}
 
 					// See if this alias exists in the database any where; if not, create it. Otherwise, re-loop
-					if (mysql_num_rows(mysql_query("SELECT `id` FROM `urls` WHERE `alias` = '$shorturl'", $link)) == '0') {
+					$doublecheckalias = $link->prepare("SELECT `id` FROM `urls` WHERE `alias` = '$shorturl'");
+					$doublecheckalias->execute();
+
+					if ($doublecheckalias->rowCount() == '0') {
 						$aliasexists = FALSE;
-						mysql_query("UPDATE `urls` SET `alias` = '$shorturl' WHERE `id` = '$id'", $link);
+						$link->query("UPDATE `urls` SET `alias` = '$shorturl' WHERE `id` = '$id'");
 					} else {
 						$a++;
 					}
@@ -101,7 +110,7 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		}
 
 		// Close MySQL connection
-		mysql_close($link);
+		$link = null;
 	}
 
 	// Show the results

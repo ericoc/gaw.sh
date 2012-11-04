@@ -1,54 +1,33 @@
 <?php
 
-// Turn on debugging if asked to
-if ( (isset($_GET['debug'])) && ($_GET['debug'] == 'yes') ) {
-	error_reporting('E_ALL');
-	$starttime = microtime(true);
-        $debug = TRUE;
-	echo <<< END
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="robots" content="noindex, nofollow">
-<link rel="stylesheet" type="text/css" href="/gawsh.css">
-<title>gaw.sh URL short... blcheck</title>
-</head>
-<body>
-END;
-
-} else {
-	$debug = FALSE;
-}
+$starttime = microtime(true);
 
 // Include configuration and functions files
-include('../config.php'); // MySQL credentials and user variables
-include('../functions.php'); // blacklist/URL verification checks
+require('../config.php'); // MySQL credentials and user variables
+require('../functions.php'); // blacklist/URL verification checks
 
 // Connect to MySQL and choose database
-$link = mysql_connect($sqlhost, $sqluser, $sqlpass) OR die('Cannot connect to DB!');
-mysql_select_db($sqldb, $link);
-
-// Query for enabled URLs
-$geturls = mysql_query("SELECT id, alias, url FROM `urls` WHERE `status` = '1'", $link);
-
-// Start out and begin counting bad URLs
-if ($debug) {
-	echo "Checking " . mysql_num_rows($geturls) . " URLs...<br><br>\n";
-	$badurls = 0;
+try {
+	$link = new PDO("mysql:host=$sqlhost;dbname=$sqldb", $sqluser, $sqlpass);
+} catch (PDOException $e) {
+	die ("Cannot connect to DB! - $e");
 }
 
+// Query for enabled URLs
+$geturls = $link->prepare("SELECT id, alias, url FROM `urls` WHERE `status` = '1'");
+$geturls->execute();
+
+// Start out and begin counting bad URLs
+echo "Checking " . $geturls->rowCount() . " URLs...\n\n";
+$badurls = 0;
+
 // Loop through every enabled URL
-while ($row = mysql_fetch_array($geturls)) {
+while ($row = $geturls->fetch(PDO::FETCH_ASSOC)) {
 
 	// Get the URL id , alias, and actual (long) URL
 	$id = $row['id'];
 	$alias = $row['alias'];
 	$url = $row['url'];
-
-	// Tell us what's being checked if debug is on
-	if ($debug) {
-		echo "Checking URL \"$url\" (ID $id / $alias)... ";
-	}
 
 	// Actually check the URL
 	$error = checkURL($url);
@@ -56,36 +35,21 @@ while ($row = mysql_fetch_array($geturls)) {
 	// If the URL is bad, do something (increment the amount of fails and eventually disable entirely?)
 	if ( (isset($error)) && (!empty($error)) ) {
 
-		// Tell us what the error was if debug is on
-		if ($debug) {
-			$badurls++;
-			echo "<span id=\"error\">$error</span><br>\n";
-		}
-
-		$error = "";
-
-	// Tell us the URL is okay if so and debug is on
-	} else {
-		if ($debug) {
-			echo "OK<br>\n";
-		}
+		$badurls++;
+		echo "Found bad URL \"$url\" (ID $id / $alias) " . strip_tags($error) . " \n";
+		$error = '';
 	}
 }
 
 // Close MySQL connection
-mysql_close($link);
+$link = null;
 
 // Show final results
-if ($debug) {
-	$endtime = microtime(true);
-	$howlong = $endtime - $starttime;
-	echo "<br>Found $badurls bad URLs<br>\n";
-	echo "Took $howlong seconds<br>\n";
-	echo "Done.\n";
-	echo <<< END
-</body>
-</html>
-END;
-}
+$endtime = microtime(true);
+$howlong = $endtime - $starttime;
+
+echo "\nFound $badurls bad URLs\n";
+echo "Took $howlong seconds\n";
+echo "Done.\n";
 
 ?>

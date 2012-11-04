@@ -31,61 +31,75 @@ function displayStatus ($id, $status) {
 // Create function to create a search query for a URL
 function searchURL ($field, $how, $value) {
 
-		global $link;
-		global $sortby;
-		global $sorthow;
-		global $limit;
+	global $link;
+	global $sortby;
+	global $sorthow;
+	global $limit;
 
-		if ($field == 'visits') {
-			$query = "SELECT * FROM `searchurlsvisits` WHERE `$field` ";
-		} else {
-			$query = "SELECT * FROM `urls` WHERE `$field` ";
-		}
+	$query = 'SELECT * FROM `';
+	if ($field == 'visits') {
+		$query .= 'searchurlsvisits';
+	} else {
+		$query .= 'urls';
+	}
 
-		switch ($how) {
-			case 'equal':
-				$query .= "= '$value'";
-			break;
-			case 'notequal':
-				$query .= "!= '$value'";
-			break;
-			case 'contains':
-				$query .= "LIKE '%" . $value . "%'";
-			break;
-			case 'greater':
-				$query .= "> '$value'";
-			break;
-			case 'less':
-				$query .= "< '$value'";
-			break;
-		}
+	$query .= "` WHERE `$field` ";
 
-		$query .= " ORDER BY `$sortby` $sorthow LIMIT $limit";
-		return $query;
+	switch ($how) {
+		case 'equal':
+			$query .= "= ?";
+		break;
+		case 'notequal':
+			$query .= "!= ?";
+		break;
+		case 'contains':
+			$query .= "LIKE %?%";
+		break;
+		case 'greater':
+			$query .= "> ?";
+		break;
+		case 'less':
+			$query .= "< ?";
+		break;
+	}
+
+	$query .= " ORDER BY `$sortby` $sorthow LIMIT $limit";
+	echo $query;
+	$st = $link->prepare($query);
+	$st->bindValue(1, $value);
+	$st->execute();
+
+	return $st;
 }
 
 // Create function to display the number of visits to a URL
 function howmanyVisits ($id) {
-	return mysql_num_rows(mysql_query("SELECT time FROM `visits` WHERE `id` = '$id'"));
+	global $link;
+	$howmanyvisits = $link->prepare("SELECT time FROM `visits` WHERE `id` = $id");
+	$howmanyvisits->execute();
+	return $howmanyvisits->rowCount();
 }
 
 // Connect to MySQL and choose database
-$link = mysql_connect($sqlhost, $sqluser, $sqlpass) OR die('Cannot connect to DB!');
-mysql_select_db($sqldb, $link);
+try {
+	$link = new PDO("mysql:host=$sqlhost;dbname=$sqldb", $sqluser, $sqlpass);
+} catch (PDOException $e) {
+	die ("Cannot connect to DB! - $e");
+}
 
 // Determine limit of URLs to list and set cookie
 if ( (isset($_POST['limit'])) && (is_numeric($_POST['limit'])) ) {
-    $limit = $_POST['limit'];
+	$limit = $_POST['limit'];
 	setcookie('limit', $limit);
 
 } elseif ( (isset($_COOKIE['limit'])) && (is_numeric($_COOKIE['limit'])) ) {
-    $limit = $_COOKIE['limit'];
+	$limit = $_COOKIE['limit'];
 
 } elseif ( (isset($_GET['limit'])) && (is_numeric($_GET['limit'])) ) {
-    $limit = $_GET['limit'];
+	$limit = $_GET['limit'];
 
 } else {
-    $limit = 20;
+	$limit = 20;
 }
 
 // Default sort methods
@@ -122,81 +136,83 @@ if ( (isset($_GET['sortby'])) && (isset($_GET['sorthow'])) ) {
 }
 
 /* Process form submission */
-
 if (isset($_GET['do'])) {
 
 	/* Search */
-
 	if ( ($_GET['do'] == 'search') && (isset($_POST['value'])) && (!empty($_POST['value'])) ) {
 
-		$field = mysql_real_escape_string($_POST['field']);
-		$how = mysql_real_escape_string($_POST['how']);
-		$value = mysql_real_escape_string($_POST['value']);
+		$field = $_POST['field'];
+		$how = $_POST['how'];
+		$value = $_POST['value'];
 
 		// Set cookies to save search query
 		setcookie('searchfield', $field);
 		setcookie('searchhow', $how);
 		setcookie('searchvalue', $value);
 
-		$listurls = mysql_query(searchURL($field, $how, $value), $link);
+		$listurls = searchURL($field, $how, $value);
 
 	/* Edit */
-
 	} elseif ( ($_GET['do'] == 'edit') && (isset($_POST['editid'])) && (is_numeric($_POST['editid'])) ) {
 
 		// Make variables workable
-		$id = mysql_real_escape_string($_POST['editid']);
-		$editalias = mysql_real_escape_string($_POST['editalias']);
-		$editurl = mysql_real_escape_string($_POST['editurl']);
-		$editip = mysql_real_escape_string($_POST['editip']);
-		$editstatus = mysql_real_escape_string($_POST['editstatus']);
+		$id = $_POST['editid'];
+		$editalias = $_POST['editalias'];
+		$editurl = $_POST['editurl'];
+		$editip = $_POST['editip'];
+		$editstatus = $_POST['editstatus'];
 
-		$editquery = "UPDATE `urls` SET `alias` = '$editalias', `url` = '$editurl', `ip` = '$editip', `status` = '$editstatus' WHERE `id` = '$id'";
-		mysql_query($editquery);
+		$editquery = $link->prepare("UPDATE `urls` SET `alias` = ?, `url` = ?, `ip` = ?, `status` = ? WHERE `id` = ?");
+		$editquery->bindValue(1, $editalias);
+		$editquery->bindValue(2, $editurl);
+		$editquery->bindValue(3, $editip);
+		$editquery->bindValue(4, $editstatus);
+		$editquery->bindValue(5, $id);
+		$editquery->execute();
 
 	/* Enable */
-
 	} elseif ( ($_GET['do'] == 'enable') && (isset($_GET['id'])) && (is_numeric($_GET['id'])) ) {
 
-		$id = mysql_real_escape_string($_GET['id']);
-		$enable = "UPDATE `urls` SET `status` = '1' WHERE `id` = '$id'";
-		mysql_query($enable);
+		$enable = $link->prepare('UPDATE `urls` SET `status` = 1 WHERE `id` = ?');
+		$enable->bindValue(1, $_GET['id'], PDO::PARAM_INT);
+		$enable->execute();
 
 	/* Disable */
-
 	} elseif ( ($_GET['do'] == 'disable') && (isset($_GET['id'])) && (is_numeric($_GET['id'])) ) {
 
-		$id = mysql_real_escape_string($_GET['id']);
-		$disable = "UPDATE `urls` SET `status` = '0' WHERE `id` = '$id'";
-		mysql_query($disable);
+		$disable = $link->prepare('UPDATE `urls` SET `status` = 0 WHERE `id` = ?');
+		$disable->bindValue(1, $_GET['id'], PDO::PARAM_INT);
+		$disable->execute();
 
 	/* Disable IP */
-
 	} elseif ( ($_GET['do'] == 'disableip') && (isset($_GET['ip'])) ) {
 
-		$disableip = mysql_real_escape_string($_GET['ip']);
-		$disable = "UPDATE `urls` SET `status` = '0' WHERE `ip` = '$disableip'";
-		mysql_query($disable);
+		$disableip = $link->prepare('UPDATE `urls` SET `status` = 0 WHERE `ip` = ?');
+		$disableip->bindValue(1, $_GET['ip'], PDO::PARAM_STR);
+		$disableip->execute();
 	}
 }
 
 // Search if cookie present
 if ( (isset($_COOKIE['searchfield'])) && (isset($_COOKIE['searchhow'])) && (isset($_COOKIE['searchvalue'])) && (!empty($_COOKIE['searchvalue'])) && (!isset($_POST['value'])) ) {
 
-		$field = mysql_real_escape_string($_COOKIE['searchfield']);
-		$how = mysql_real_escape_string($_COOKIE['searchhow']);
-		$value = mysql_real_escape_string($_COOKIE['searchvalue']);
+	$field = $_COOKIE['searchfield'];
+	$how = $_COOKIE['searchhow'];
+	$value = $_COOKIE['searchvalue'];
 
-		$listurls = mysql_query(searchURL($field, $how, $value), $link);
+	$listurls = searchURL($field, $how, $value);
 }
 
 // Default query if we are not searching, and clear cookies
 if (!isset($listurls)) {
+
 	if ($sortby == 'visits') {
-		$listurls = mysql_query("SELECT urls.*, count(visits.id) AS visitors FROM urls INNER JOIN visits ON visits.id = urls.id GROUP BY visits.id ORDER BY visitors $sorthow LIMIT $limit", $link); 
+		$listurls = $link->prepare("SELECT urls.*, count(visits.id) AS visitors FROM urls INNER JOIN visits ON visits.id = urls.id GROUP BY visits.id ORDER BY visitors $sorthow LIMIT $limit");
 	} else {
-		$listurls = mysql_query("SELECT * FROM `urls` ORDER BY `$sortby` $sorthow LIMIT $limit", $link);
+		$listurls = $link->prepare("SELECT * FROM `urls` ORDER BY $sortby $sorthow LIMIT $limit");
 	}
+
+	$listurls->execute();
 
 	setcookie('searchfield', '', time()-100);
 	setcookie('searchhow', '', time()-100);
@@ -204,10 +220,9 @@ if (!isset($listurls)) {
 }
 
 // Count number of URLs being listed
-$counturls = mysql_num_rows($listurls);
+$counturls = $listurls->rowCount();
 
 /* HTML header */
-
 ?>
 <html>
 <head>
@@ -220,13 +235,12 @@ $counturls = mysql_num_rows($listurls);
 <?php
 
 // Say so if there are no results
-if ($counturls == 0) {
+if ($counturls == '0') {
 	echo "<i>No results</i><br><br>\n";
 
 } else {
 
 	/* List URLs in a table */
-
 	echo "<table align=\"center\">\n";
 	echo "<tr>\n";
 	echo "<th><a href=\"?sortby=id&sorthow=asc\">&uarr;</a> ID <a href=\"?sortby=id&sorthow=desc\">&darr;</a></th>\n";
@@ -241,7 +255,7 @@ if ($counturls == 0) {
 	// Count total visits based on results
 	$totalvisits = 0;
 
-	while ($row = mysql_fetch_array($listurls)) {
+	while ($row = $listurls->fetch(PDO::FETCH_ASSOC)) {
 
 		$visits = howmanyVisits($row['id']);
 		$totalvisits = $totalvisits + $visits;
@@ -275,21 +289,21 @@ if ($counturls == 0) {
 }
 
 /* Edit form */
-
 if ( (isset($_GET['do'])) && ($_GET['do'] == 'edit') && (isset($_GET['id'])) && (is_numeric($_GET['id'])) ) {
 
 	$editid = $_GET['id'];
-	$editform = mysql_query("SELECT * FROM `urls` WHERE `id` = '$editid'", $link);
+	$editform = $link->prepare("SELECT * FROM `urls` WHERE `id` = '$editid'");
+	$editform->execute();
 
-	if (mysql_num_rows($editform) != 0) {
+	if ($editform->rowCount() != 0) {
 
-		echo "<form method=\"post\" action=\"/admin/?do=edit&id=" . $_GET['id'] . "#edit\">\n";
+		echo "<form method=\"post\" action=\"/admin/?do=edit&id=" . $editid . "#edit\">\n";
 		echo "<table align=\"center\">\n";
 		echo "<tr>\n";
 		echo "<th colspan=\"2\"><a name=\"edit\">Edit URL</a></th>\n";
 		echo "</tr>\n";
 
-		while ($editrow = mysql_fetch_array($editform)) {
+		while ($editrow = $editform->fetch(PDO::FETCH_ASSOC)) {
 
 			$editvisits = howmanyVisits($editrow['id']);
 
@@ -344,7 +358,7 @@ if ( (isset($_GET['do'])) && ($_GET['do'] == 'edit') && (isset($_GET['id'])) && 
 }
 
 // Close MySQL connection
-mysql_close($link);
+$link = null;
 
 /* Search form */
 ?>

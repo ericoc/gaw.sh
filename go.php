@@ -33,30 +33,38 @@ if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 	require('config.php');
 
 	// Connect to MySQL and choose database
-	$link = mysql_connect($sqlhost, $sqluser, $sqlpass) OR die('Cannot connect to DB!');
-	mysql_select_db($sqldb, $link);
-
-	// Parse URL alias
-	$alias = mysql_real_escape_string(trim($_GET['x']));
+	try {
+		$link = new PDO("mysql:host=$sqlhost;dbname=$sqldb", $sqluser, $sqlpass);
+	} catch (PDOException $e) {
+		die ("Cannot connect to DB! - $e");
+	}
 
 	// Check if the alias exists
-	$check = mysql_query("SELECT id, url, status FROM `urls` WHERE `alias` = '$alias'", $link);
+	$check = $link->prepare("SELECT id, url, status FROM `urls` WHERE `alias` = ?");
+	$check->bindValue(1, $_GET['x'], PDO::PARAM_STR);
+	$check->execute();
 
 	// Get ID, long URL, and status if the alias exists
-	if (mysql_num_rows($check) >= 1) {
+	if ($check->rowCount() >= 1) {
 
-		while ($row = mysql_fetch_array($check)) {
+		while ($row = $check->fetch(PDO::FETCH_ASSOC)) {
 			$id = $row['id'];
 			$to = $row['url'];
 			$status = $row['status'];
 		}
 
 		// Add an entry to the visits table
-		mysql_query("INSERT INTO `visits` VALUES ('$id', '$ip', '$browser', '$referrer', '$time')", $link);
+		$addvisit = $link->prepare("INSERT INTO `visits` VALUES (?, ?, ?, ?, ?)");
+		$addvisit->bindValue(1, $id, PDO::PARAM_INT);
+		$addvisit->bindValue(2, $ip, PDO::PARAM_STR);
+		$addvisit->bindValue(3, $browser, PDO::PARAM_STR);
+		$addvisit->bindValue(4, $referrer, PDO::PARAM_STR);
+		$addvisit->bindValue(5, $time, PDO::PARAM_INT);
+		$addvisit->execute();
 	}
 
 	// Disconnect from MySQL
-	mysql_close($link);
+	$link = null;
 }
 
 // Redirect to long URL if it was found and is active; show error message if it has been disabled, is in a weird status, or was not found
