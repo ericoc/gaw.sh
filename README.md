@@ -23,7 +23,7 @@ If they gave an (optional) custom alias:
 * Make sure it is alpha-numeric and not taken
 
 Checks URL domain name against:
-* Dumb domain list
+* [Dumb domain list](https://github.com/ericoc/gawsh/blob/master/admin/dumb.txt)
 	* Mostly contains other URL shorteners, localhost, gaw.sh itself, etc...
 * Spamhaus Domain Block List (DBL)
 	* http://www.spamhaus.org/dbl/
@@ -147,13 +147,13 @@ Gives the ability to quickly/easily disable a spam/malicious/bad/whatever URL
 * Clicking the IP address of the creator of a bad URL allows you to quickly disable any and all URLs created by that IP address
 
 Lets an administrator edit the details of any specific/individual URL
-* No method by which to delete an URL from the table or database entirely, only disable/edit/hide it
+* No method by which to delete a URL from the table or database entirely, only disable/edit/hide it
 * Statuses are:
 	* 0 - disabled
 	* 1 - active (default)
 	* -1 - "hidden" (returns 404; can only be set by admin)
 
-Can view the number of visits to an URL; my first time using a JOIN in MySQL (thanks Stan!):
+Can view the number of visits to a URL; my first time using a JOIN in MySQL (thanks [Stan](https://github.com/Stantheman)!):
 
 	mysql> SELECT urls.*, count(visits.id) AS visitors FROM urls INNER JOIN visits ON visits.id = urls.id GROUP BY visits.id ORDER BY visitors desc limit 1;
 	+----+----------------+-------------------------------------------------------------------+---------------+------------+--------+----------+
