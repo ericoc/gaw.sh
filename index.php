@@ -48,7 +48,7 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		try {
 			$link = new PDO("mysql:host=$sqlhost;dbname=$sqldb", $sqluser, $sqlpass);
 		} catch (PDOException $e) {
-			die ("Cannot connect to DB! - $e");
+			die ('Cannot connect to DB!');
 		}
 
 		// Check if the alias has been used already

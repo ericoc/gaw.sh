@@ -36,7 +36,7 @@ if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 	try {
 		$link = new PDO("mysql:host=$sqlhost;dbname=$sqldb", $sqluser, $sqlpass);
 	} catch (PDOException $e) {
-		die ("Cannot connect to DB! - $e");
+		die ('Cannot connect to DB!');
 	}
 
 	// Check if the alias exists

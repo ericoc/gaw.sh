@@ -84,7 +84,7 @@ function howmanyVisits ($id) {
 try {
 	$link = new PDO("mysql:host=$sqlhost;dbname=$sqldb", $sqluser, $sqlpass);
 } catch (PDOException $e) {
-	die ("Cannot connect to DB! - $e");
+	die ('Cannot connect to DB!');
 }
 
 // Determine limit of URLs to list and set cookie
