@@ -1,10 +1,11 @@
 <?php
 
+// Start calculating execution time
 $starttime = microtime(true);
 
 // Include configuration and functions files
-require('../config.php'); // MySQL credentials and user variables
-require('../functions.php'); // blacklist/URL verification checks
+require('../config.php'); // MySQL credentials
+require('../functions.php'); // Blacklist/URL verification checks
 
 // Connect to MySQL and choose database
 try {
@@ -13,11 +14,11 @@ try {
 	die ('Cannot connect to DB!');
 }
 
-// Query for enabled URLs
+// Query for all enabled/active URLs
 $geturls = $link->prepare("SELECT id, alias, url FROM `urls` WHERE `status` = '1'");
 $geturls->execute();
 
-// Start out and begin counting bad URLs
+// Show total number of URLs being checked and begin counting bad URLs
 echo "Checking " . $geturls->rowCount() . " URLs...\n\n";
 $badurls = 0;
 
@@ -32,9 +33,10 @@ while ($row = $geturls->fetch(PDO::FETCH_ASSOC)) {
 	// Actually check the URL
 	$error = checkURL($url);
 
-	// If the URL is bad, do something (increment the amount of fails and eventually disable entirely?)
+	// If the URL is bad, do something (eventually disable entirely?)
 	if ( (isset($error)) && (!empty($error)) ) {
 
+		// For now, just increment the number of failed URLs and show any bad URLs while stripping the HTML from checkURL()
 		$badurls++;
 		echo "Found bad URL \"$url\" (ID $id / $alias) " . strip_tags($error) . " \n";
 		$error = '';
@@ -44,12 +46,13 @@ while ($row = $geturls->fetch(PDO::FETCH_ASSOC)) {
 // Close MySQL connection
 $link = null;
 
-// Show final results
+// Calculate execution time
 $endtime = microtime(true);
 $howlong = $endtime - $starttime;
 
+// Show final results (number of bad URLs) and execution time
 echo "\nFound $badurls bad URLs\n";
 echo "Took $howlong seconds\n";
-echo "Done.\n";
+echo 'Done!';
 
 ?>
