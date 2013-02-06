@@ -4,4 +4,4 @@ ErrorDocument 403 /go.php?x=403
 RewriteEngine On
 RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-d
 RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
-RewriteRule ^(.*)$ /go.php?x=$1 [L]
+RewriteRule ^(.*?)/?$ /go.php?x=$1 [L]
