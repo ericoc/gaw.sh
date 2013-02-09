@@ -89,7 +89,10 @@ if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 
 		} // End status switch
 
-	} // End alias existence check
+	// Show 404 not found error if the alias was not found
+	} else {
+		showError('404 not found');
+	}
 
 	// Disconnect from MySQL
 	$link = null;
@@ -98,10 +101,6 @@ if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 // Redirect the user to the long URL if it was an active alias
 if (isset($redirect)) {
 	header("Location: $redirect", TRUE, 301);
-
-// Otherwise, simply show a 404 not found error
-} else {
-	showError('404 not found');
 }
 
 ?>
