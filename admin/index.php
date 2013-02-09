@@ -1,7 +1,7 @@
 <?php
 
 // Require configuration
-require('../config.php');
+require('config.php');
 
 // Create function to display the status of a URL and link to change its status
 function displayStatus ($id, $status) {

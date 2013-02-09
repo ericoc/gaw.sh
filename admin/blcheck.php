@@ -4,7 +4,7 @@
 $starttime = microtime(true);
 
 // Include configuration and functions files
-require('../config.php'); // MySQL credentials
+require('config.php'); // MySQL credentials
 require('../functions.php'); // Blacklist/URL verification checks
 
 // Connect to MySQL and choose database

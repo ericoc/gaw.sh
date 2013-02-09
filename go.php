@@ -30,7 +30,7 @@ END;
 if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 
 	// Require configuration; do not need functions.php here
-	require('config.php');
+	require('admin/config.php');
 
 	// Connect to MySQL and choose database
 	try {

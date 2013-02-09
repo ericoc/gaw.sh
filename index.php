@@ -14,7 +14,7 @@
 if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'http://') ) {
 
 	// Require configuration/settings
-	require('config.php'); // MySQL credentials and user variables
+	require('admin/config.php'); // MySQL credentials and user variables
 
 	// Trim submitted URL, throw "http://" on the front if it does not start with either http:// or https://
 	$url = trim($_POST['url']);
