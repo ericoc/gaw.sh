@@ -98,6 +98,10 @@ if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 // Redirect the user to the long URL if it was an active alias
 if (isset($redirect)) {
 	header("Location: $redirect", TRUE, 301);
+
+// Otherwise, simply show a 404 not found error
+} else {
+	showError('404 not found');
 }
 
 ?>
