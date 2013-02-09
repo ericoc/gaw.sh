@@ -1,6 +1,6 @@
 <?php
 
-// Create function to set header and display error message on bad URLs
+// Create function to set header, display error message on bad URLs, and exit
 function showError ($error) {
 
 	$pretty = ucwords($error);
@@ -23,11 +23,19 @@ function showError ($error) {
 </body>
 </html>
 END;
-
 }
 
 // Start the search for the URL if an alias was given
 if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
+
+	// Just show an error immediately for forced 401s, 403s, 404s, or 410s
+	switch ($_GET['x']) {
+		case 401: showError('401 not authorized'); exit; break;
+		case 403: showError('403 forbidden'); exit; break;
+		case 404: showError('404 not found'); exit; break;
+		case 410: showError('410 gone'); exit; break;
+		default: break;
+	}
 
 	// Require configuration; do not need functions.php here
 	require('admin/config.php');
@@ -44,41 +52,52 @@ if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 	$check->bindValue(1, $_GET['x'], PDO::PARAM_STR);
 	$check->execute();
 
-	// Get ID, long URL, and status if the alias exists
+	// Check if the alias exists
 	if ($check->rowCount() >= 1) {
 
+		// Get ID, long URL, and status if the alias exists
 		while ($row = $check->fetch(PDO::FETCH_ASSOC)) {
 			$id = $row['id'];
 			$to = $row['url'];
 			$status = $row['status'];
 		}
 
-		// Add an entry to the visits table
-		$addvisit = $link->prepare("INSERT INTO `visits` VALUES (?, ?, ?, ?, ?)");
-		$addvisit->bindValue(1, $id, PDO::PARAM_INT);
-		$addvisit->bindValue(2, $ip, PDO::PARAM_STR);
-		$addvisit->bindValue(3, $browser, PDO::PARAM_STR);
-		$addvisit->bindValue(4, $referrer, PDO::PARAM_STR);
-		$addvisit->bindValue(5, $time, PDO::PARAM_INT);
-		$addvisit->execute();
-	}
+		// Decide what to do next based on URL status
+		switch ($status) {
+
+			// Active
+			case 1:
+
+				// Set a variable so that we redirect later, after the MySQL connection is closed
+				$redirect = $to;
+
+				// Add an entry to the visitors MySQL table
+				$addvisit = $link->prepare("INSERT INTO `visits` VALUES (?, ?, ?, ?, ?)");
+				$addvisit->bindValue(1, $id, PDO::PARAM_INT);
+				$addvisit->bindValue(2, $ip, PDO::PARAM_STR);
+				$addvisit->bindValue(3, $browser, PDO::PARAM_STR);
+				$addvisit->bindValue(4, $referrer, PDO::PARAM_STR);
+				$addvisit->bindValue(5, $time, PDO::PARAM_INT);
+				$addvisit->execute();
+			break;
+
+			// Disabled
+			case 0: showError('410 gone'); break;
+
+			// Neither active nor disabled (weird status like "-1" for hidden or something)
+			default: showError('404 not found'); break;
+
+		} // End status switch
+
+	} // End alias existence check
 
 	// Disconnect from MySQL
 	$link = null;
 }
 
-// Redirect to long URL if it was found and is active; show error message if it has been disabled, is in a weird status, or was not found
-if ( (isset($to)) && ($status == '1') ) {
-	header("Location: $to", TRUE, 301);
-
-} elseif ( (isset($to)) && ($status == '0') ) {
-	showError('410 gone');
-
-} elseif ($alias == '403') {
-	showError('403 forbidden');
-
-} else {
-	showError('404 not found');
+// Redirect the user to the long URL if it was an active alias
+if (isset($redirect)) {
+	header("Location: $redirect", TRUE, 301);
 }
 
 ?>
