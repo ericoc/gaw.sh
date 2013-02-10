@@ -13,6 +13,7 @@ function showError ($error) {
 <meta name="description" content="gaw.sh url shortener $error">
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" type="text/css" href="/gawsh.css">
+<link rel="shortcut icon" href="/favicon.ico">
 <title>gaw.sh URL short... $error</title>
 </head>
 <body>
@@ -25,8 +26,14 @@ function showError ($error) {
 END;
 }
 
+// Handle direct visits to this file without an alias passed
+if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
+
+	// Redirect to "/"
+	header('Location: /', TRUE, 302);
+
 // Start the search for the URL if an alias was given
-if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
+} else {
 
 	// Just show an error immediately for forced 401s, 403s, 404s, or 410s
 	switch ($_GET['x']) {
@@ -52,7 +59,7 @@ if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 	$check->bindValue(1, $_GET['x'], PDO::PARAM_STR);
 	$check->execute();
 
-	// Check if the alias exists
+	// Check if the alias exists in the database
 	if ($check->rowCount() >= 1) {
 
 		// Get ID, long URL, and status if the alias exists
@@ -96,7 +103,8 @@ if ( (isset($_GET['x'])) && (!empty($_GET['x'])) ) {
 
 	// Disconnect from MySQL
 	$link = null;
-}
+
+} // End alias existence check
 
 // Redirect the user to the long URL if it was an active alias
 if (isset($redirect)) {

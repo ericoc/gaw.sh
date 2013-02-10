@@ -2,7 +2,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="description" content="gaw.sh url shortener">
 <link rel="stylesheet" type="text/css" href="/gawsh.css">
+<link rel="shortcut icon" href="/favicon.ico">
 <title>gaw.sh URL short...</title>
 </head>
 <body>
