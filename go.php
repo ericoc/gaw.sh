@@ -35,12 +35,13 @@ if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
 // Start the search for the URL if an alias was given
 } else {
 
-	// Just show an error immediately for forced 401s, 403s, 404s, or 410s
+	// Just show an error immediately for forced 401s, 403s, 404s, 410s, or 503s
 	switch ($_GET['x']) {
 		case 401: showError('401 not authorized'); exit; break;
 		case 403: showError('403 forbidden'); exit; break;
 		case 404: showError('404 not found'); exit; break;
 		case 410: showError('410 gone'); exit; break;
+		case 503: showError('503 service unavailable'); exit; break;
 		default: break;
 	}
 
@@ -50,8 +51,11 @@ if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
 	// Connect to MySQL and choose database
 	try {
 		$link = new PDO("mysql:host=$sqlhost;dbname=$sqldb", $sqluser, $sqlpass);
+
+	// Show clean 503 service unavailable error if the database is unavailable
 	} catch (PDOException $e) {
-		die ('Cannot connect to DB!');
+		showError('503 service unavailable');
+		exit;
 	}
 
 	// Check if the alias exists

@@ -49,8 +49,10 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		// Connect to MySQL and choose database
 		try {
 			$link = new PDO("mysql:host=$sqlhost;dbname=$sqldb", $sqluser, $sqlpass);
+
+		// Show clean 503 service unavailable error if the database is unavailable
 		} catch (PDOException $e) {
-			die ('Cannot connect to DB!');
+			header('Location: /503', TRUE, 302);
 		}
 
 		// Check if the alias has been used already
