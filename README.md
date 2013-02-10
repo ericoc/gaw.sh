@@ -165,11 +165,4 @@ Can view the number of visits to a URL; my first time using a JOIN in MySQL (tha
 
 ---------------------------------------
 
-## Notes
-
-* Attempting to visit a hidden/disabled URL will still add an entry for that URL to the "visits" table even though it is not active
-* More to come at some point...
-
----------------------------------------
-
 ### ENJOY!
