@@ -82,7 +82,8 @@ function isZEN ($domain) {
 	for ($z = 0; $z < count($lookup); $z++) {
 
 		// Reverse octets of the IP address, append ".zen.spamhaus.org", and look it up
-		$ips = explode('.', $lookup[$z][ip]);
+		$theip = $lookup["$z"]['ip'];
+		$ips = explode('.', $theip);
 		$checkip = $ips[3] . '.' . $ips[2] . '.' . $ips[1] . '.' . $ips[0] . '.zen.spamhaus.org';
 		$check = gethostbyname($checkip);
 
