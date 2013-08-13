@@ -87,7 +87,7 @@ function isZEN ($domain) {
 		$checkip = $ips[3] . '.' . $ips[2] . '.' . $ips[1] . '.' . $ips[0] . '.zen.spamhaus.org';
 		$check = gethostbyname($checkip);
 
-		// Check the IP address in question against Spamhaus' ZEN; ignore 127.0.0.10-11 (IPs)
+		// Check the IP address in question against Spamhaus' ZEN; ignore 127.0.0.10-11 IPs (PBL)
 		if ( ($check != $checkip) && ($check != '127.0.0.10') && ($check != '127.0.0.11') ) {
 			return TRUE;
 		}
