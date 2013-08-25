@@ -33,6 +33,8 @@ Checks URL domain name against:
 	* http://www.uribl.com/
 * Google Safe Browsing API
 	* https://developers.google.com/safe-browsing/
+* PhishTank API
+	* https://www.phishtank.com/api_info.php
 
 Checks domain names IP address(es) against:
 * Spamhaus ZEN (SBL, SBLCSS, XBL and PBL)
