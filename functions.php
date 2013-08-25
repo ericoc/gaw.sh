@@ -26,15 +26,15 @@ function isPT ($url, $ptkey) {
 	}
 }
 
-// Create a function to check if a domain is listed on the Google Safe Browsing API which includes phishing/malware URLs
-function isGSB ($domain, $gsbkey) {
+// Create a function to check if a URL is listed on the Google Safe Browsing API which includes phishing/malware URLs
+function isGSB ($url, $gsbkey) {
 
-	// Append the domain name that we are checking to the Google Safe Browsing API lookup URL
-	$url = 'https://sb-ssl.google.com/safebrowsing/api/lookup?client=gawsh&apikey=' . $gsbkey . '&appver=1.0&pver=3.0&url=' . $domain;
+	// Append the encoded URL that we are checking to the Google Safe Browsing API lookup URL
+	$gsburl = 'https://sb-ssl.google.com/safebrowsing/api/lookup?client=gawsh&apikey=' . $gsbkey . '&appver=1.5.2&pver=3.0&url=' . urlencode($url);
 
 	// Perform an HTTP GET request to the Google Safe Browsing API and make a decision based on response code
 	$c = curl_init();
-	curl_setopt($c, CURLOPT_URL, $url);
+	curl_setopt($c, CURLOPT_URL, $gsburl);
 	curl_setopt($c, CURLOPT_HEADER, 1);
 	curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($c, CURLOPT_NOBODY, 1);
@@ -207,7 +207,7 @@ function checkURL ($url) {
 		$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/index.lasso">blacklisted</a>)';
 
 	// Check domain against Google Safe Browsing list if an API key was given in "config.php"
-	} elseif ( (!empty($gsbkey)) && (isGSB($domain, $gsbkey)) ) {
+	} elseif ( (!empty($gsbkey)) && (isGSB($url, $gsbkey)) ) {
 		$error = 'Invalid URL (<a href="http://www.google.com/safebrowsing/diagnostic?site=' . $domain . '">blacklisted</a>)';
 
 	// Check URL against PhishTank API if a developer key was given in "config.php"
