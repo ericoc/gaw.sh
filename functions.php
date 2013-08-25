@@ -1,5 +1,31 @@
 <?php
 
+// Create a function to check if a URL is valid/online phishing website according to PhishTank
+function isPT ($url, $ptkey) {
+
+	// PhishTank expects the URL that you are checking to be URL encoded
+	$url = urlencode($url);
+
+	// Perform an HTTP POST request to PhishTank including the encoded url to get a JSON response using your application/developer key
+	$c = curl_init();
+	curl_setopt($c, CURLOPT_URL, 'http://checkurl.phishtank.com/checkurl/');
+	curl_setopt($c, CURLOPT_POST, 1);
+	curl_setopt($c, CURLOPT_POSTFIELDS, "format=json&app_key=$ptkey&url=$url");
+	curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($c, CURLOPT_USERAGENT, 'GAW.SH URL Shortener - http://gaw.sh/');
+	curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 2);
+	curl_setopt($c, CURLOPT_TIMEOUT, 2);
+	$r = curl_exec($c);
+	curl_close($c);
+
+	// If the URL is in PhishTank's database, it is a valid and online phishing website
+	if (preg_match('/"in_database":true/', $r)) {
+	        return TRUE;
+	} else {
+	        return FALSE;
+	}
+}
+
 // Create a function to check if a domain is listed on the Google Safe Browsing API which includes phishing/malware URLs
 function isGSB ($domain, $gsbkey) {
 
@@ -154,8 +180,8 @@ function isLegit ($url) {
 // Master function to run all of the above checks against a URL and/or its domain name
 function checkURL ($url) {
 
-	// Need the Google Safe Browsing API key from "config.php"
-	global $gsbkey;
+	// Need the Google Safe Browsing API and PhishTank keys from "config.php"
+	global $gsbkey, $ptkey;
 
 	// Determine domain name
 	$domain = parse_url($url, PHP_URL_HOST);
@@ -183,6 +209,9 @@ function checkURL ($url) {
 	// Check domain against Google Safe Browsing list if an API key was given in "config.php"
 	} elseif ( (!empty($gsbkey)) && (isGSB($domain, $gsbkey)) ) {
 		$error = 'Invalid URL (<a href="http://www.google.com/safebrowsing/diagnostic?site=' . $domain . '">blacklisted</a>)';
+
+	} elseif ( (!empty($ptkey)) && (isPT($url, $ptkey)) ) {
+		$error = 'Invalid URL (<a href="https://www.phishtank.com/">phishing</a>)';
 
 	// Check that the URL actually works
 	} elseif (!isLegit($url)) {
