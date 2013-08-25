@@ -210,6 +210,7 @@ function checkURL ($url) {
 	} elseif ( (!empty($gsbkey)) && (isGSB($domain, $gsbkey)) ) {
 		$error = 'Invalid URL (<a href="http://www.google.com/safebrowsing/diagnostic?site=' . $domain . '">blacklisted</a>)';
 
+	// Check URL against PhishTank API if a developer key was given in "config.php"
 	} elseif ( (!empty($ptkey)) && (isPT($url, $ptkey)) ) {
 		$error = 'Invalid URL (<a href="https://www.phishtank.com/">phishing</a>)';
 
