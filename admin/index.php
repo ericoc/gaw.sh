@@ -224,6 +224,7 @@ $counturls = $listurls->rowCount();
 
 /* HTML header */
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>gaw.sh URL short... admin</title>

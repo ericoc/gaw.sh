@@ -648,3 +648,5 @@ gaw.sh
 www.gaw.sh
 127.0.0.1
 localhost
+zro.co
+www.zro.co

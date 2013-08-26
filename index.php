@@ -1,8 +1,9 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="description" content="gaw.sh url shortener">
+<meta name="keywords" content="gaw.sh, url, shortener, gawsh">
 <link rel="stylesheet" type="text/css" href="/gawsh.css">
 <link rel="shortcut icon" href="/favicon.ico">
 <title>gaw.sh URL short...</title>
