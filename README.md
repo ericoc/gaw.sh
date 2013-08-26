@@ -8,7 +8,7 @@
 
 http://gaw.sh/ is a simple URL shortener which I created mostly over a two week vacation using PHP with a MySQL database containing two tables ("urls" and "visits")
 
-My design skills suck, but it works. Thanks to [Jico](https://github.com/jico) for the alternating table row background colors tip! (see "tr:nth-child..." in [gawsh.css](https://github.com/ericoc/gawsh/blob/master/gawsh.css#L88-96))
+My design skills suck, but it works. Thanks to [Jico](https://github.com/jico) for the alternating table row background colors tip! (see "tr:nth-child..." in [gawsh.css](https://github.com/ericoc/gaw.sh/blob/master/gawsh.css#L88-96))
 
 ---------------------------------------
 
@@ -23,7 +23,7 @@ If they gave an (optional) custom alias:
 * Make sure it is alpha-numeric and not taken
 
 Checks URL domain name against:
-* [Dumb domain list](https://github.com/ericoc/gawsh/blob/master/admin/dumb.txt)
+* [Dumb domain list](https://github.com/ericoc/gaw.sh/blob/master/admin/dumb.txt)
 	* Mostly contains other URL shorteners, localhost, gaw.sh itself, etc...
 * Spamhaus Domain Block List (DBL)
 	* http://www.spamhaus.org/dbl/
