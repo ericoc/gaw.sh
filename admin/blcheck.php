@@ -21,8 +21,8 @@ $geturls = $link->prepare("SELECT id, alias, url FROM `urls` WHERE `status` = '1
 $geturls->execute();
 
 // Show total number of URLs being checked and begin counting bad URLs
-echo "Checking " . $geturls->rowCount() . " URLs...\n\n";
-$badurls = 0;
+echo "Checking " . $geturls->rowCount() . " URL(s)...\n\n";
+$badcount = 0;
 
 // Loop through every enabled URL from the past week
 while ($row = $geturls->fetch(PDO::FETCH_ASSOC)) {
@@ -30,20 +30,28 @@ while ($row = $geturls->fetch(PDO::FETCH_ASSOC)) {
 	// Get the URLs id, alias, and actual (long) URL
 	$id = $row['id'];
 	$alias = $row['alias'];
-	$url = $row['url'];
+	$longurl = $row['url'];
 
-	// Actually check the URL
-	$error = checkURL($url);
+	// Loop through both the user-added long URL and the local alias
+	$localurl = 'http://' . $_SERVER['SERVER_NAME'] . '/' . $alias;
+	$bothurls = array($longurl, $localurl);
+	foreach ($bothurls as $url) {
 
-	// If the URL is bad, say so while incrementing the amount of fails and disable the short URL/alias in question
-	if ( (isset($error)) && (!empty($error)) ) {
+		// Actually check both the long URL and the local alias URL
+		// However, without judging bad/dumb domain names like usual (since the local domain name itself is likely on this list)
+		$error = checkURL($url, 'false');
 
-		$badurls++;
-		echo "Found and disabled bad URL \"$url\" (ID $id / $alias) " . strip_tags($error) . " \n";
-		$disableurl = $link->prepare("UPDATE `urls` SET `status` = '0' WHERE `id` = ?");
-		$disableurl->bindValue(1, $id, PDO::PARAM_STR);
-		$disableurl->execute();
-		$error = '';
+		// If the URL is bad, say so while incrementing the amount of fails short URL/alias in question
+		if ( (isset($error)) && (!empty($error)) ) {
+
+			echo "Found and disabled bad URL \"$url\" (ID $id / $alias) - " . strip_tags($error) . "\n";
+			$disableurl = $link->prepare("UPDATE `urls` SET `status` = '0' WHERE `id` = ?");
+			$disableurl->bindValue(1, $id, PDO::PARAM_STR);
+			$disableurl->execute();
+
+			$badcount++;
+			$error = '';
+		}
 	}
 }
 
@@ -53,7 +61,7 @@ $link = null;
 // Show final results
 $endtime = microtime(true);
 $howlong = $endtime - $starttime;
-echo "\nFound and disabled $badurls bad URLs\n";
+echo "\nFound and disabled $badcount bad URL(s)\n";
 echo "Took $howlong seconds\n";
 echo "Done!\n";
 

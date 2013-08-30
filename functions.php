@@ -178,7 +178,7 @@ function isLegit ($url) {
 }
 
 // Master function to run all of the above checks against a URL and/or its domain name
-function checkURL ($url) {
+function checkURL ($url, $plusdumb = 'true') {
 
 	// Need the Google Safe Browsing API and PhishTank keys from "config.php"
 	global $gsbkey, $ptkey;
@@ -187,7 +187,7 @@ function checkURL ($url) {
 	$domain = parse_url($url, PHP_URL_HOST);
 
 	// Check if domain is on the dumb list
-	if (isDumb($domain)) {
+	if ( ($plusdumb == 'true') && (isDumb($domain)) ) {
 		$error = 'Invalid URL (bad domain name)';
 
 	// Check domain against Spamhaus' DBL
