@@ -366,12 +366,12 @@ $link = null;
 <form method="post" action="/admin/?do=search">
 Search for
 <select name="field">
-<option name="id">id</option>
-<option name="alias">alias</option>
-<option name="url">url</option>
-<option name="ip">ip</option>
-<option name="status">status</option>
-<option name="visits">visits</option>
+<option value="id">id</option>
+<option value="alias">alias</option>
+<option value="url">url</option>
+<option value="ip">ip</option>
+<option value="status">status</option>
+<option value="visits">visits</option>
 </select>
 that
 <select name="how">
