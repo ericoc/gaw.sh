@@ -231,7 +231,6 @@ $counturls = $listurls->rowCount();
 <link rel="stylesheet" type="text/css" href="/gawsh.css">
 </head>
 <body>
-<center>
 <h1><a href="/admin/">gaw.sh admin</a></h1><br>
 <?php
 
@@ -386,6 +385,5 @@ and limit to <input type="text" name="limit" value="<?php echo $limit; ?>" size=
 <input type="submit" value="search!">
 <input type="reset" value="nevermind">
 </form>
-</center>
 </body>
 </html>

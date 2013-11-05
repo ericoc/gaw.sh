@@ -17,10 +17,8 @@ function showError ($error) {
 <title>gaw.sh URL short... $error</title>
 </head>
 <body>
-<center>
 <h1><a href="/">gaw.sh url shortener</a></h1><br>
 <span id="error">$pretty</span>
-</center>
 </body>
 </html>
 END;

@@ -9,7 +9,6 @@
 <title>gaw.sh URL short...</title>
 </head>
 <body>
-<center>
 <h1><a href="/">gaw.sh url shortener</a></h1><br>
 <?php
 
@@ -132,12 +131,11 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 } /* Done processing form */
 
 ?>
-<form method="post" action="">
+<form method="post">
 <input type="text" size="50" name="url" value="http://"><br>
 Alias (optional): <input type="text" size="20" name="alias"><br><br>
 <input type="submit" value="shorten!">
 <input type="reset" value="nevermind">
 </form>
-</center>
 </body>
 </html>
