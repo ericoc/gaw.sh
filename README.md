@@ -8,7 +8,7 @@
 
 http://gaw.sh/ is a simple URL shortener which I created mostly over a two week vacation using PHP with a MySQL database containing two tables ("urls" and "visits")
 
-My design skills suck, but it works. Thanks to [Jico](https://github.com/jico) for the alternating table row background colors tip! (see "tr:nth-child..." in [gawsh.css](https://github.com/ericoc/gaw.sh/blob/master/gawsh.css#L88-96))
+My design skills suck, but it works. Thanks to [Jico](https://github.com/jico) for the alternating table row background colors tip! (see "tr:nth-child..." in [gawsh.css](https://github.com/ericoc/gaw.sh/blob/master/gawsh.css#L89-97))
 
 ---------------------------------------
 
