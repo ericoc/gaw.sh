@@ -9,7 +9,7 @@ $sqldb = 'gawsh';
 // Google Safe Browsing API key; leave blank if you do not want to check this blacklist
 $gsbkey = '';
 
-// PhishiTank API key; leave blank if you do not want to check this blacklist
+// PhishTank API key; leave blank if you do not want to check this blacklist
 $ptkey = '';
 
 // Get some user variables
