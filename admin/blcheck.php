@@ -41,7 +41,7 @@ while ($row = $geturls->fetch(PDO::FETCH_ASSOC)) {
 		// However, without judging bad/dumb domain names like usual (since the local domain name itself is likely on this list)
 		$error = checkURL($url, 'false');
 
-		// If the URL is bad, say so while incrementing the amount of fails short URL/alias in question
+		// If the URL is determined to be "bad", disable it and say so while incrementing the amount of total failures over the scripts run
 		if ( (isset($error)) && (!empty($error)) ) {
 
 			echo "Found and disabled bad URL \"$url\" (ID $id / $alias) - " . strip_tags($error) . "\n";
