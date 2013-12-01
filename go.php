@@ -1,10 +1,16 @@
 <?php
 
-// Create function to set header, display error message on bad URLs, and exit
+// Create a function to set header, display error message on bad URLs, and exit
 function showError ($error) {
 
-	$pretty = ucwords($error);
-	header($_SERVER['SERVER_PROTOCOL'] . ' ' . $pretty);
+	// The array keys are the HTTP status codes and the value of each key is the meaning of said code
+	global $errors;
+	$prettyerror = $errors["$error"];
+
+	// Set the HTTP response header based on the error ("HTTP/1.1 404 Not Found", for example)
+	header($_SERVER['SERVER_PROTOCOL'] . " $error $prettyerror");
+
+	// Show the error page using the "pretty" error message
 	echo <<< END
 <!DOCTYPE html>
 <html>
@@ -14,33 +20,30 @@ function showError ($error) {
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" type="text/css" href="/gawsh.css">
 <link rel="shortcut icon" href="/favicon.ico">
-<title>gaw.sh URL short... $error</title>
+<title>gaw.sh URL short... $prettyerror</title>
 </head>
 <body>
 <h1><a href="/">gaw.sh url shortener</a></h1><br>
-<span id="error">$pretty</span>
+<span id="error">$prettyerror</span>
 </body>
 </html>
 END;
-}
+	exit;
+} // Finish our custom error message function
 
-// Handle direct visits to this file without an alias passed
+// Handle direct visits to this file, without an alias passed, by redirecting to "/"
 if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
-
-	// Redirect to "/"
 	header('Location: /', TRUE, 302);
 
 // Start the search for the URL if an alias was given
 } else {
 
-	// Just show an error immediately for forced 401s, 403s, 404s, 410s, or 503s
-	switch ($_GET['x']) {
-		case 401: showError('401 not authorized'); exit; break;
-		case 403: showError('403 forbidden'); exit; break;
-		case 404: showError('404 not found'); exit; break;
-		case 410: showError('410 gone'); exit; break;
-		case 503: showError('503 service unavailable'); exit; break;
-		default: break;
+	// Create an array of possible HTTP error codes and their meanings
+	$errors = array('401' => 'Not Authorized', '403' => 'Forbidden', '404' => 'Not Found', '410' => 'Gone', '503' => 'Service Unavailable');
+
+	// Just show an error immediately for forced errors
+	if (array_key_exists($_GET['x'], $errors)) {
+		showError($_GET['x']);
 	}
 
 	// Require configuration; do not need functions.php here
@@ -52,7 +55,7 @@ if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
 
 	// Show clean 503 service unavailable error if the database is unavailable
 	} catch (PDOException $e) {
-		showError('503 service unavailable');
+		showError('503');
 		exit;
 	}
 
@@ -90,25 +93,25 @@ if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
 				$addvisit->execute();
 			break;
 
-			// Disabled
-			case 0: showError('410 gone'); break;
+			// Disabled returns 410 Gone error page
+			case 0: showError('410'); break;
 
-			// Neither active nor disabled (weird status like "-1" for hidden or something)
-			default: showError('404 not found'); break;
+			// Neither active nor disabled (or weird status like "-1" for hidden) returns 404 Not Found error
+			default: showError('404'); break;
 
 		} // End status switch
 
-	// Show 404 not found error if the alias was not found
+	// Show 404 Not Found error if the alias was actually not found in the database
 	} else {
-		showError('404 not found');
+		showError('404');
 	}
 
 	// Disconnect from MySQL
 	$link = null;
 
-} // End alias existence check
+} // End alias search check
 
-// Redirect the user to the long URL if it was an active alias
+// Redirect the user to the long URL if it was an active/valid alias
 if (isset($redirect)) {
 	header("Location: $redirect", TRUE, 301);
 }
