@@ -28,7 +28,6 @@ function showError ($error) {
 </body>
 </html>
 END;
-	exit;
 } // Finish our custom error message function
 
 // Handle direct visits to this file, without an alias passed, by redirecting to "/"
