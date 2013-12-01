@@ -16,7 +16,7 @@ function showError ($error) {
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="description" content="gaw.sh url shortener $error">
+<meta name="description" content="gaw.sh url shortener $prettyerror">
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" type="text/css" href="/gawsh.css">
 <link rel="shortcut icon" href="/favicon.ico">
