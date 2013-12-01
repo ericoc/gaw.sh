@@ -8,7 +8,8 @@ function showError ($error) {
 	$prettyerror = $errors["$error"];
 
 	// Set the HTTP response header based on the error ("HTTP/1.1 404 Not Found", for example)
-	header($_SERVER['SERVER_PROTOCOL'] . " $error $prettyerror");
+//	header($_SERVER['SERVER_PROTOCOL'] . " $error $prettyerror");
+	echo $_SERVER['SERVER_PROTOCOL'] . " $error $prettyerror";
 
 	// Show the error page using the "pretty" error message
 	echo <<< END
@@ -28,7 +29,7 @@ function showError ($error) {
 </body>
 </html>
 END;
-	exit;
+//	exit;
 } // Finish our custom error message function
 
 // Handle direct visits to this file, without an alias passed, by redirecting to "/"
@@ -41,9 +42,10 @@ if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
 	// Create an array of possible HTTP error codes and their meanings
 	$errors = array('401' => 'Not Authorized', '403' => 'Forbidden', '404' => 'Not Found', '410' => 'Gone', '503' => 'Service Unavailable');
 
-	// Just show an error immediately for forced errors
+	// Just show an error immediately for forced errors and stop further execution
 	if (array_key_exists($_GET['x'], $errors)) {
 		showError($_GET['x']);
+		exit;
 	}
 
 	// Require configuration; do not need functions.php here
