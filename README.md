@@ -23,7 +23,7 @@ If they gave an (optional) custom alias:
 * Make sure it is alpha-numeric and not taken
 
 Checks URL domain name against:
-* [Dumb domain list](https://github.com/ericoc/gaw.sh/blob/master/admin/dumb.txt)
+* [Dumb domain list](https://github.com/ericoc/gaw.sh/blob/master/admin/dumb.txt.example)
 	* Mostly contains other URL shorteners, localhost, gaw.sh itself, etc...
 * Spamhaus Domain Block List (DBL)
 	* http://www.spamhaus.org/dbl/
