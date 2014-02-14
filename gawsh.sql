@@ -24,7 +24,6 @@ INSERT INTO `urls` (`id`, `alias`, `url`, `ip`, `time`, `status`) VALUES
 
 
 -- Table structure for table `visits`
-DROP TABLE IF EXISTS `visits`;
 CREATE TABLE IF NOT EXISTS `visits` (
   `id` int(10) unsigned NOT NULL,
   `ip` varchar(128) NOT NULL,
