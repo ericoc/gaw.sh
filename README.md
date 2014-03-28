@@ -43,17 +43,17 @@ Checks domain names IP address(es) against:
 If everything goes well and checks out, we add a URL to the "urls" table of the MySQL database, then...
 
 	mysql> show columns from urls;
-	+--------+------------------+------+-----+---------+----------------+
-	| Field  | Type             | Null | Key | Default | Extra          |
-	+--------+------------------+------+-----+---------+----------------+
-	| id     | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
-	| alias  | varchar(50)      | NO   | UNI | NULL    |                |
-	| url    | text             | NO   |     | NULL    |                |
-	| ip     | varchar(128)     | NO   |     | NULL    |                |
-	| time   | int(10) unsigned | NO   |     | NULL    |                |
-	| status | varchar(2)       | NO   |     | NULL    |                |
-	+--------+------------------+------+-----+---------+----------------+
-	6 rows in set (0.00 sec)
+	+--------+------------------+------+-----+-------------------+----------------+
+	| Field  | Type             | Null | Key | Default           | Extra          |
+	+--------+------------------+------+-----+-------------------+----------------+
+	| id     | int(10) unsigned | NO   | PRI | NULL              | auto_increment |
+	| alias  | varchar(50)      | NO   | UNI | NULL              |                |
+	| url    | text             | NO   |     | NULL              |                |
+	| ip     | varchar(128)     | NO   |     | NULL              |                |
+	| time   | timestamp        | NO   |     | CURRENT_TIMESTAMP |                |
+	| status | varchar(2)       | NO   |     | NULL              |                |
+	+--------+------------------+------+-----+-------------------+----------------+
+	6 rows in set (0.01 sec)
 
 If they did not give an (optional) custom alias:
 * Generate one using the base36 of auto-incremented numeric database ID (from MySQL "urls" table)
@@ -65,11 +65,11 @@ If they did not give an (optional) custom alias:
 Example data:
 
 	mysql> select * from urls order by id desc limit 1;
-	+------+---------+---------------------+---------------+------------+--------+
-	| id   | alias   | url                 | ip            | time       | status |
-	+------+---------+---------------------+---------------+------------+--------+
-	| 1244 | 8static | http://8static.com/ | 98.221.114.54 | 1323632995 | 1      |
-	+------+---------+---------------------+---------------+------------+--------+
+	+------+---------+---------------------+---------------+---------------------+--------+
+	| id   | alias   | url                 | ip            | time                | status |
+	+------+---------+---------------------+---------------+---------------------+--------+
+	| 1244 | 8static | http://8static.com/ | 98.221.114.54 | 2011-12-11 14:49:55 | 1      |
+	+------+---------+---------------------+---------------+---------------------+--------+
 	1 row in set (0.00 sec)
 
 ---------------------------------------
@@ -88,25 +88,25 @@ Example data:
 A row is inserted in to the MySQL "visits" table with the database ID of the URL from the "urls" table (relational, woo!) as well as the IP address, browser, and referring URL of the visitor along with the timestamp of the visit:
 
 	mysql> show columns from visits;
-	+----------+------------------+------+-----+---------+-------+
-	| Field    | Type             | Null | Key | Default | Extra |
-	+----------+------------------+------+-----+---------+-------+
-	| id       | int(10) unsigned | NO   | MUL | NULL    |       |
-	| ip       | varchar(128)     | NO   |     | NULL    |       |
-	| browser  | text             | NO   |     | NULL    |       |
-	| referrer | text             | NO   |     | NULL    |       |
-	| time     | int(10) unsigned | NO   |     | NULL    |       |
-	+----------+------------------+------+-----+---------+-------+
+	+----------+------------------+------+-----+-------------------+-------+
+	| Field    | Type             | Null | Key | Default           | Extra |
+	+----------+------------------+------+-----+-------------------+-------+
+	| id       | int(10) unsigned | NO   | MUL | NULL              |       |
+	| ip       | varchar(128)     | NO   |     | NULL              |       |
+	| browser  | text             | NO   |     | NULL              |       |
+	| referrer | text             | NO   |     | NULL              |       |
+	| time     | timestamp        | NO   |     | CURRENT_TIMESTAMP |       |
+	+----------+------------------+------+-----+-------------------+-------+
 	5 rows in set (0.00 sec)
 
 Example data:
 
 	mysql> select * from visits order by id desc limit 1;
-	+------+---------------+-----------------------------------------------------------------------------------------------------------------------+----------------+------------+
-	| id   | ip            | browser                                                                                                               | referrer       | time       |
-	+------+---------------+-----------------------------------------------------------------------------------------------------------------------+----------------+------------+
-	| 1244 | 98.221.114.54 | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2 | http://gaw.sh/ | 1323633008 |
-	+------+---------------+-----------------------------------------------------------------------------------------------------------------------+----------------+------------+
+	+------+---------------+-----------------------------------------------------------------------------------------------------------------------+----------------+---------------------+
+	| id   | ip            | browser                                                                                                               | referrer       | time                |
+	+------+---------------+-----------------------------------------------------------------------------------------------------------------------+----------------+---------------------+
+	| 1244 | 98.221.114.54 | Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2 | http://gaw.sh/ | 2011-12-11 14:50:08 |
+	+------+---------------+-----------------------------------------------------------------------------------------------------------------------+----------------+---------------------+
 	1 row in set (0.00 sec)
 
 HTTP 301 redirect ("Moved Permanently") to the long/actual URL if it is active (status "1"):
@@ -158,12 +158,12 @@ Lets an administrator edit the details of any specific/individual URL
 Can view the number of visits to a URL; my first time using a JOIN in MySQL (thanks [Stan](https://github.com/Stantheman)!):
 
 	mysql> SELECT urls.*, count(visits.id) AS visitors FROM urls INNER JOIN visits ON visits.id = urls.id GROUP BY visits.id ORDER BY visitors desc limit 1;
-	+----+----------------+-------------------------------------------------------------------+---------------+------------+--------+----------+
-	| id | alias          | url                                                               | ip            | time       | status | visitors |
-	+----+----------------+-------------------------------------------------------------------+---------------+------------+--------+----------+
-	|  3 | linodereferral | http://www.linode.com/?r=f9976de410ab39ee8e022d5bcc9ad24c6df18536 | 71.197.190.30 | 1323044415 | 1      |       52 |
-	+----+----------------+-------------------------------------------------------------------+---------------+------------+--------+----------+
-	1 row in set (0.01 sec)
+	+----+----------------+-------------------------------------------------------------------+---------------+---------------------+--------+----------+
+	| id | alias          | url                                                               | ip            | time                | status | visitors |
+	+----+----------------+-------------------------------------------------------------------+---------------+---------------------+--------+----------+
+	|  3 | linodereferral | http://www.linode.com/?r=f9976de410ab39ee8e022d5bcc9ad24c6df18536 | 71.197.190.30 | 2011-12-04 19:20:15 | 1      |       52 |
+	+----+----------------+-------------------------------------------------------------------+---------------+---------------------+--------+----------+
+	1 row in set (0.00 sec)
 
 ---------------------------------------
 
