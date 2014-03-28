@@ -2,8 +2,6 @@
 
 ---------------------------------------
 
-## :warning: THIS BRANCH IS UNDER DEVELOPMENT AND LIKELY WILL NOT WORK AT THE MOMENT
-
 *Eric O'Callaghan*
 
 *Started: November 11th, 2011*
