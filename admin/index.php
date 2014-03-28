@@ -53,7 +53,8 @@ function searchURL ($field, $how, $value) {
 			$query .= "!= ?";
 		break;
 		case 'contains':
-			$query .= "LIKE CONCAT('%', ?, '%')";
+			$value = '%' . $value . '%';
+			$query .= "LIKE ?";
 		break;
 		case 'greater':
 			$query .= "> ?";
