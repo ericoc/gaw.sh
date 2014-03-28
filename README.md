@@ -50,7 +50,7 @@ If everything goes well and checks out, we add a URL to the "urls" table of the 
 	| alias  | varchar(50)      | NO   | UNI | NULL    |                |
 	| url    | text             | NO   |     | NULL    |                |
 	| ip     | varchar(128)     | NO   |     | NULL    |                |
-	| time   | varchar(15)      | NO   |     | NULL    |                |
+	| time   | int(10) unsigned | NO   |     | NULL    |                |
 	| status | varchar(2)       | NO   |     | NULL    |                |
 	+--------+------------------+------+-----+---------+----------------+
 	6 rows in set (0.00 sec)
@@ -95,7 +95,7 @@ A row is inserted in to the MySQL "visits" table with the database ID of the URL
 	| ip       | varchar(128)     | NO   |     | NULL    |       |
 	| browser  | text             | NO   |     | NULL    |       |
 	| referrer | text             | NO   |     | NULL    |       |
-	| time     | varchar(15)      | NO   |     | NULL    |       |
+	| time     | int(10) unsigned | NO   |     | NULL    |       |
 	+----------+------------------+------+-----+---------+-------+
 	5 rows in set (0.00 sec)
 
