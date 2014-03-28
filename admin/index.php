@@ -75,7 +75,7 @@ function searchURL ($field, $how, $value) {
 // Create function to display the number of visits to a URL
 function howmanyVisits ($id) {
 	global $link;
-	$howmanyvisits = $link->prepare("SELECT time FROM `visits` WHERE `id` = $id");
+	$howmanyvisits = $link->prepare("SELECT `time` FROM `visits` WHERE `id` = $id");
 	$howmanyvisits->execute();
 	return $howmanyvisits->rowCount();
 }
@@ -274,7 +274,7 @@ if ($counturls == '0') {
 		echo "</a></td>\n";
 
 		echo "<td align=\"center\"><a onclick=\"return confirm('Are you REALLY sure?');\" href=\"/admin/?do=disableip&ip=" . $row['ip'] . "\">" . $row['ip'] . "</a></td>\n";
-		echo "<td align=\"center\">" . date('Y-m-d / g:i:s A', $row['time']) . "</td>\n";
+		echo "<td align=\"center\">" . $row['time'] . "</td>\n";
 		echo "<td align=\"center\">" . displayStatus($row['id'], $row['status']) . "</td>\n";
 		echo "<td align=\"center\">" . $visits . "</td>\n";
 		echo "</tr>\n";
@@ -329,7 +329,7 @@ if ( (isset($_GET['do'])) && ($_GET['do'] == 'edit') && (isset($_GET['id'])) && 
 
 			echo "<tr>\n";
 			echo "<th>When</th>\n";
-			echo "<td>" . date('Y-m-d / g:i:s A', $editrow['time']) . " (" . $editrow['time'] . ")</td>\n";
+			echo "<td>" . $editrow['time'] . "</td>\n";
 			echo "</tr>\n";
 
 			echo "<tr>\n";

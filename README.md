@@ -2,6 +2,8 @@
 
 ---------------------------------------
 
+## :warning: THIS BRANCH IS UNDER DEVELOPMENT AND LIKELY WILL NOT WORK AT THE MOMENT
+
 *Eric O'Callaghan*
 
 *Started: November 11th, 2011*
@@ -59,7 +61,7 @@ If they did not give an (optional) custom alias:
 * Generate one using the base36 of auto-incremented numeric database ID (from MySQL "urls" table)
 	* $shorturl = base_convert($id, 10, 36);
 * If the generated one is also taken:
-	* Keep generating new ones using base36 of random generated number (0-10), followed by numeric database ID, and UNIX time until we find something that is not taken
+	* Keep generating new ones using base36 of random generated number (0-10), followed by numeric database ID, and UNIX timestamp until we find something that is not taken
 		* $shorturl = base_convert(rand(0,10).$id.time(), 10, 36);
 
 Example data:
@@ -85,7 +87,7 @@ Example data:
 	RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
 	RewriteRule ^(.*?)/?$ /go.php?x=$1 [L]
 
-A row is inserted in to the MySQL "visits" table with the database ID of the URL from the "urls" table (relational, woo!) as well as the IP address, browser, and referring URL of the visitor along with the UNIX time of the visit:
+A row is inserted in to the MySQL "visits" table with the database ID of the URL from the "urls" table (relational, woo!) as well as the IP address, browser, and referring URL of the visitor along with the timestamp of the visit:
 
 	mysql> show columns from visits;
 	+----------+------------------+------+-----+---------+-------+

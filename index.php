@@ -69,7 +69,7 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		}
 
 		// Add the URL to the database if there are still not any errors
-		$addurl = $link->prepare("INSERT INTO `urls` VALUES ('0', ?, ?, '$ip', '$time', '1')");
+		$addurl = $link->prepare("INSERT INTO `urls` VALUES ('0', ?, ?, '$ip', NOW(), '1')");
 		$addurl->bindValue(1, $alias, PDO::PARAM_STR);
 		$addurl->bindValue(2, $url, PDO::PARAM_STR);
 
