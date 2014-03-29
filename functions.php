@@ -107,9 +107,6 @@ function isZEN ($domain) {
 	// Loop through each IP address returned
 	foreach ($lookups as $lookup) {
 
-		// Get the IP address from the array returned by dns_get_record()
-		$ip = $lookup['ip'];
-
 		// Reverse the octet order of the IP address, append ".zen.spamhaus.org", and look it up
 		$checkname = implode('.', array_reverse(explode('.', $lookup['ip']))) . '.zen.spamhaus.org';
 		$check = gethostbyname($checkname);
