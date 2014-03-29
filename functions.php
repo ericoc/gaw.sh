@@ -98,23 +98,24 @@ function isURIBL ($domain) {
 	}
 }
 
-// Create a function to check if an domain is on Spamhaus' ZEN
+// Create a function to check if a domain resolves to an IP address on Spamhaus' ZEN
 function isZEN ($domain) {
 
 	// Resolve the domain name to an IPv4 address
-	$lookup = dns_get_record($domain, DNS_A);
+	$lookups = dns_get_record($domain, DNS_A);
 
-	// Loop through each IP address
-	for ($z = 0; $z < count($lookup); $z++) {
+	// Loop through each IP address returned
+	foreach ($lookups as $lookup) {
 
-		// Reverse octets of the IP address, append ".zen.spamhaus.org", and look it up
-		$theip = $lookup["$z"]['ip'];
-		$ips = explode('.', $theip);
-		$checkip = $ips[3] . '.' . $ips[2] . '.' . $ips[1] . '.' . $ips[0] . '.zen.spamhaus.org';
-		$check = gethostbyname($checkip);
+		// Get the IP address from the array returned by dns_get_record()
+		$ip = $lookup['ip'];
+
+		// Reverse the octet order of the IP address, append ".zen.spamhaus.org", and look it up
+		$checkname = implode('.', array_reverse(explode('.', $lookup['ip']))) . '.zen.spamhaus.org';
+		$check = gethostbyname($checkname);
 
 		// Check the IP address in question against Spamhaus' ZEN; ignore 127.0.0.10-11 IPs (PBL)
-		if ( ($check != $checkip) && ($check != '127.0.0.10') && ($check != '127.0.0.11') ) {
+		if ( ($check != $checkname) && ($check != '127.0.0.10') && ($check != '127.0.0.11') ) {
 			return TRUE;
 		}
 	}
