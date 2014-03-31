@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `visits` (
 -- --------------------------------------------------------
 
 -- `recentvisits` view
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `recentvisits` AS select `urls`.`alias` AS `alias`,`visits`.`time` AS `time`,`visits`.`ip` AS `ip`,`visits`.`referrer` AS `referrer` from (`visits` join `urls` on((`urls`.`id` = `visits`.`id`))) order by `visits`.`time` desc limit 100;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `recentvisits` as select `urls`.`id` AS `id`, `urls`.`alias` AS `alias`, `visits`.`time` AS `time`, `visits`.`ip` AS `ip`, `visits`.`referrer` AS `referrer`, `urls`.`status` AS `status` FROM (`visits` join `urls` on((`urls`.`id` = `visits`.`id`))) order by `visits`.`time` desc;
 
 -- `searchurlsvisits` view
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`%` SQL SECURITY DEFINER VIEW `searchurlsvisits` AS select `urls`.`id` AS `id`,`urls`.`alias` AS `alias`,`urls`.`url` AS `url`,`urls`.`ip` AS `ip`,`urls`.`time` AS `time`,`urls`.`status` AS `status`,count(`visits`.`id`) AS `visits` from (`urls` join `visits` on((`visits`.`id` = `urls`.`id`))) group by `visits`.`id`;
