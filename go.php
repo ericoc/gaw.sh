@@ -114,5 +114,3 @@ if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
 if (isset($redirect)) {
 	header("Location: $redirect", TRUE, 301);
 }
-
-?>
