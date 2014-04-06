@@ -110,7 +110,7 @@ $sorthow = 'desc';
 // Get sort methods if reasonable values were passed via URL
 if ( (isset($_GET['sortby'])) && (isset($_GET['sorthow'])) ) {
 
-	if ( ($_GET['sortby'] == 'id') || ($_GET['sortby'] == 'alias') || ($_GET['sortby'] == 'url') || ($_GET['sortby'] == 'ip') || ($_GET['sortby'] == 'visits') ) {
+	if ( ($_GET['sortby'] == 'id') || ($_GET['sortby'] == 'alias') || ($_GET['sortby'] == 'url') || ($_GET['sortby'] == 'ip') || ($_GET['sortby'] == 'time') || ($_GET['sortby'] == 'visits') ) {
 
 		if ( ($_GET['sorthow'] == 'asc') || ($_GET['sorthow'] == 'desc') ) {
 
@@ -126,7 +126,7 @@ if ( (isset($_GET['sortby'])) && (isset($_GET['sorthow'])) ) {
 // Use sort method from cookie if available
 } elseif ( (isset($_COOKIE['sortby'])) && (isset($_COOKIE['sorthow'])) ) {
 
-	if ( ($_COOKIE['sortby'] == 'id') || ($_COOKIE['sortby'] == 'alias') ||  ($_COOKIE['sortby'] == 'url') || ($_COOKIE['sortby'] == 'ip') || ($_COOKIE['sortby'] == 'visits') ) {
+	if ( ($_COOKIE['sortby'] == 'id') || ($_COOKIE['sortby'] == 'alias') ||  ($_COOKIE['sortby'] == 'url') || ($_COOKIE['sortby'] == 'ip') || ($_COOKIE['sortby'] == 'time') || ($_COOKIE['sortby'] == 'visits') ) {
 
 		if ( ($_COOKIE['sorthow'] == 'asc') || ($_COOKIE['sorthow'] == 'desc') ) {
 
@@ -248,7 +248,7 @@ if ($counturls == '0') {
 	echo "<th><a href=\"?sortby=alias&sorthow=asc\">&uarr;</a> Alias <a href=\"?sortby=alias&sorthow=desc\">&darr;</a></th>\n";
 	echo "<th><a href=\"?sortby=url&sorthow=asc\">&uarr;</a> URL <a href=\"?sortby=url&sorthow=desc\">&darr;</a></th>\n";
 	echo "<th><a href=\"?sortby=ip&sorthow=asc\">&uarr;</a> IP <a href=\"?sortby=ip&sorthow=desc\">&darr;</a></th>\n";
-	echo "<th>When</th>\n";
+	echo "<th><a href=\"?sortby=time&sorthow=asc\">&uarr;</a> When <a href=\"?sortby=time&sorthow=desc\">&darr;</a></th>\n";
 	echo "<th>Status</th>\n";
 	echo "<th><a href=\"?sortby=visits&sorthow=asc\">&uarr;</a> Visits <a href=\"?sortby=visits&sorthow=desc\">&darr;</a></th>\n";
 	echo "</tr>\n";
