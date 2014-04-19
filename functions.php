@@ -201,6 +201,10 @@ function checkURL ($url) {
 		if (isDumb($domain)) {
 			$error = 'Invalid URL (bad domain name)';
 
+		// Check that the URL actually works
+		} elseif (!isLegit($url)) {
+			$error = 'Invalid URL (not found)';
+
 		// Check domain against Spamhaus' DBL
 		} elseif (isDBL($domain)) {
 			$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/answers.lasso?section=Spamhaus%20DBL">blacklisted</a>)';
@@ -224,10 +228,6 @@ function checkURL ($url) {
 		// Check URL against PhishTank API if a developer key was given in "config.php"
 		} elseif ( (!empty($ptkey)) && (isPT($url, $ptkey)) ) {
 			$error = 'Invalid URL (<a href="https://www.phishtank.com/">phishing</a>)';
-
-		// Check that the URL actually works
-		} elseif (!isLegit($url)) {
-			$error = 'Invalid URL (not found)';
 		}
 	}
 
