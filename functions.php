@@ -197,8 +197,12 @@ function checkURL ($url) {
 	// Run through all of the checks if is a real/remote URL
 	} else {
 
-		// Check if domain is on the dumb list
-		if (isDumb($domain)) {
+		// Check that URL has sane characters
+		if (!filter_var($url, FILTER_VALIDATE_URL)) {
+			$error = 'Invalid URL (formatting)';
+
+		// Check if domain name is on the dumb list
+		} elseif (isDumb($domain)) {
 			$error = 'Invalid URL (bad domain name)';
 
 		// Check that the URL actually works
