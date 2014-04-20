@@ -59,13 +59,14 @@ while ($row = $geturls->fetch(PDO::FETCH_ASSOC)) {
 if (empty($badurls)) {
 	echo "No URLs to disable!\n";
 
-// Disable all bad URLs in our array and count affected
+// Disable bad URLs if there are any
 } else {
 
-	// Disable all bad URLs in our array and count affected
+	// Turn the bad URLs array in to a comma-separated list to prepare a single query to disable them all at once
 	$badurls = implode(', ', $badurls);
 	$disableurls = $link->prepare("UPDATE `urls` SET `status` = '0' WHERE `id` IN ($badurls)");
 
+	// Run single query to disable all bad URLs and show the count of affected rows, or say so if it failed
 	if ($disableurls->execute()) {
 		$disabledcount = $disableurls->rowCount();
 	} else {
