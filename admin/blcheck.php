@@ -46,7 +46,7 @@ while ($row = $geturls->fetch(PDO::FETCH_ASSOC)) {
 		// Handle a bad URL/failed check
 		if ( (isset($error)) && (!empty($error)) ) {
 
-			// Add the URL to an array of bad URLs that we will disable later and give details about the bad URL
+			// Give details about the bad URL and add it to an array of bad URLs that we will disable later
 			$badurls[] = $id;
 			echo "$checkurl (ID $id / $alias) - " . strip_tags($error) . "\n";
 
