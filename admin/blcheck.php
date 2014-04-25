@@ -56,7 +56,7 @@ while ($row = $geturls->fetch(PDO::FETCH_ASSOC)) {
 			$badurls[] = $id;
 			echo "$checkurl (ID $id / $alias) - " . strip_tags($error) . "\n";
 
-			break; # Don't bother checking the long/real URL if the local alias is already bad
+			break; // Don't bother checking the long/real URL if the local alias is already bad
 		}
 	}
 }

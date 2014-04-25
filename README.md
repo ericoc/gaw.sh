@@ -169,11 +169,11 @@ Can view the number of visits to a URL; my first time using a JOIN in MySQL (tha
 
 ## Double-checking URLs
 
-[/admin/blcheck.php](https://github.com/ericoc/gaw.sh/blob/master/admin/blcheck.php) can be run as a cron job to check any URLs added in the past week against the various blacklists implemented. You could modify a Linux servers crontab to include a line such as the following to run the script at 6:30 each morning :
+[/admin/blcheck.php](https://github.com/ericoc/gaw.sh/blob/master/admin/blcheck.php) can be run as a cron job to perform all checks against any URLs added in the past week. You could modify a Linux servers crontab to include a line such as the following to run the script at 6:30 each morning :
 
 	30 6 * * *	curl -su user:password http://gaw.sh/admin/blcheck.php | mail -r 'badurls@gaw.sh' -s 'gaw.sh Bad URLs Report' admin@gaw.sh
 
-Furthermore, this script will check local URLs (i.e. gaw.sh/sketchyurl) from the past week against the PhishTank and Google Safe Browsing APIs.
+Furthermore, this script will also check local aliased URLs (i.e. gaw.sh/sketchyurl) from the past week for formatting as well as against the PhishTank and Google Safe Browsing APIs to get a head start on any abuse in the case where a local alias has been blacklisted and is redirecting to a phishing website that has not yet been placed on a blacklist.
 
 
 ### ENJOY!
