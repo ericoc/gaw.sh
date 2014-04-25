@@ -176,63 +176,50 @@ function isLegit ($url) {
 }
 
 // Master function to run all of the above checks against a URL and/or its domain name
-function checkURL ($url) {
+// ...but do not use all functions against local URLs/aliases passed from admin/blcheck.php where local = true
+function checkURL ($url, $local = 'false') {
 
 	// Need the Google Safe Browsing API and PhishTank keys from "config.php"
 	global $gsbkey, $ptkey;
 
-	// Determine domain name
+	// Always determine domain name
 	$domain = parse_url($url, PHP_URL_HOST);
 
-	// Only try to check the PhishTank and Google Safe Browsing APIs if it is a local URL
-	if ($domain == $_SERVER['SERVER_NAME']) {
+	// Always check that all URLs have sane characters
+	if (!filter_var($url, FILTER_VALIDATE_URL)) {
+		$error = 'Invalid URL (formatting)';
 
-		if ( (!empty($gsbkey)) && (isGSB($url, $gsbkey)) ) {
-			$error = 'Invalid URL (<a href="http://www.google.com/safebrowsing/diagnostic?site=' . $domain . '">blacklisted</a>)';
+	// Check remote domain names against the dumb domain list
+	} elseif ( ($local == 'false') && (isDumb($domain)) ) {
+		$error = 'Invalid URL (bad domain name)';
 
-		} elseif ( (!empty($ptkey)) && (isPT($url, $ptkey)) ) {
-			$error = 'Invalid URL (<a href="https://www.phishtank.com/">phishing</a>)';
-		}
+	// Check that remote URLs actually work
+	} elseif ( ($local == 'false') && (!isLegit($url)) ) {
+		$error = 'Invalid URL (not found)';
 
-	// Run through all of the checks if is a real/remote URL
-	} else {
+	// Check remote domain names against Spamhaus' DBL
+	} elseif ( ($local == 'false') && (isDBL($domain)) ) {
+		$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/answers.lasso?section=Spamhaus%20DBL">blacklisted</a>)';
 
-		// Check that URL has sane characters
-		if (!filter_var($url, FILTER_VALIDATE_URL)) {
-			$error = 'Invalid URL (formatting)';
+	// Check remote domain names against SURBL
+	} elseif ( ($local == 'false') && (isSURBL($domain)) ) {
+		$error = 'Invalid URL (<a href="http://www.surbl.org/faqs">blacklisted</a>)';
 
-		// Check if domain name is on the dumb list
-		} elseif (isDumb($domain)) {
-			$error = 'Invalid URL (bad domain name)';
+	// Check remote domain names against URIBL
+	} elseif ( ($local == 'false') && (isURIBL($domain)) ) {
+		$error = 'Invalid URL (<a href="http://www.uribl.com/about.shtml">blacklisted</a>)';
 
-		// Check that the URL actually works
-		} elseif (!isLegit($url)) {
-			$error = 'Invalid URL (not found)';
+	// Check remote domain names against Spamhaus' ZEN
+	} elseif ( ($local == 'false') && (isZEN($domain)) ) {
+		$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/index.lasso">blacklisted</a>)';
 
-		// Check domain against Spamhaus' DBL
-		} elseif (isDBL($domain)) {
-			$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/answers.lasso?section=Spamhaus%20DBL">blacklisted</a>)';
+	// Check all URLs against Google Safe Browsing API, if an API key was given in "config.php"
+	} elseif ( (!empty($gsbkey)) && (isGSB($url, $gsbkey)) ) {
+		$error = 'Invalid URL (<a href="http://www.google.com/safebrowsing/diagnostic?site=' . $domain . '">blacklisted</a>)';
 
-		// Check domain against SURBL
-		} elseif (isSURBL($domain)) {
-			$error = 'Invalid URL (<a href="http://www.surbl.org/faqs">blacklisted</a>)';
-
-		// Check domain against URIBL
-		} elseif (isURIBL($domain)) {
-			$error = 'Invalid URL (<a href="http://www.uribl.com/about.shtml">blacklisted</a>)';
-
-		// Check domain against Spamhaus' ZEN
-		} elseif (isZEN($domain)) {
-			$error = 'Invalid URL (<a href="http://www.spamhaus.org/faq/index.lasso">blacklisted</a>)';
-
-		// Check domain against Google Safe Browsing API if an API key was given in "config.php"
-		} elseif ( (!empty($gsbkey)) && (isGSB($url, $gsbkey)) ) {
-			$error = 'Invalid URL (<a href="http://www.google.com/safebrowsing/diagnostic?site=' . $domain . '">blacklisted</a>)';
-
-		// Check URL against PhishTank API if a developer key was given in "config.php"
-		} elseif ( (!empty($ptkey)) && (isPT($url, $ptkey)) ) {
-			$error = 'Invalid URL (<a href="https://www.phishtank.com/">phishing</a>)';
-		}
+	// Check all URLs against PhishTank API, if a developer key was given in "config.php"
+	} elseif ( (!empty($ptkey)) && (isPT($url, $ptkey)) ) {
+		$error = 'Invalid URL (<a href="https://www.phishtank.com/">phishing</a>)';
 	}
 
 	// Return any error (i.e. the URL is bad)

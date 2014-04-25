@@ -40,8 +40,14 @@ while ($row = $geturls->fetch(PDO::FETCH_ASSOC)) {
 	$localurl = 'http://' . $_SERVER['SERVER_NAME'] . '/' . $alias;
 	foreach (array($localurl, $longurl) as $checkurl) {
 
-		// Check the URL in question
-		$error = checkURL($checkurl);
+		// Check the URL in question differently if it is the local alias
+		if ($localurl == $checkurl) {
+			$local = 'true';
+		} else {
+			$local = 'false';
+		}
+
+		$error = checkURL($checkurl, $local);
 
 		// Handle a bad URL/failed check
 		if ( (isset($error)) && (!empty($error)) ) {
