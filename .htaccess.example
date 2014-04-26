@@ -2,6 +2,7 @@ ErrorDocument 401 /go.php?x=401
 ErrorDocument 403 /go.php?x=403
 ErrorDocument 404 /go.php?x=404
 ErrorDocument 410 /go.php?x=410
+ErrorDocument 500 /go.php?x=500
 ErrorDocument 503 /go.php?x=503
 
 # Redirect any request that is not for a real file or directory to /go.php?x=
