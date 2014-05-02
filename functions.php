@@ -118,24 +118,6 @@ function isZEN ($domain) {
 	}
 }
 
-/*
-Commenting this out for now since it might have been over-kill; was catching anything using Cloudflares name servers for example
-
-// Create a function to check if the authoritative nameservers of a domain are on Spamhaus' ZEN
-function isZENNS ($domain) {
-
-	// Determine authoritative nameservers for the domain name
-	$authns = dns_get_record($domain, DNS_NS);
-
-	// Check the IP address of each authoritative nameserver
-	for ($z = 0; $z < count($authns); $z++) {
-		if (isZEN($authns[$z][target])) {
-			return TRUE;
-		}
-	}
-}
-*/
-
 // Create a function to check if a domain name is dumb
 function isDumb ($domain) {
 
