@@ -168,6 +168,7 @@ function checkURL ($url, $local = 'false') {
 	$domain = parse_url($url, PHP_URL_HOST);
 
 	// Always check that all URLs have sane characters
+	//  but this bug breaks IPv6 address URLs: https://bugs.php.net/bug.php?id=54629
 	if (!filter_var($url, FILTER_VALIDATE_URL)) {
 		$error = 'Invalid URL (formatting)';
 

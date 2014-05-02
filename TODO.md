@@ -1,4 +1,4 @@
 # Things that need fixing/betterment
 
-Fix blacklist lookup functions to understand multiple A (and AAAA) records/CNAMEs
- * Also not 100% sure how a URL that is simply an IP address would be handled as the blacklist functions are designed for use primarily with domain names
+ * Fix blacklist checks and functions.php over-all to understand and properly handle URLs that are purely IP (v4 or v6) addresses
+  * IPv6 address URLs depend on this PHP bug being closed: https://bugs.php.net/bug.php?id=54629
