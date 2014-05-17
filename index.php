@@ -44,7 +44,7 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 	}
 
 	// Move on with possibly adding URL if there are no errors
-	if ( (!isset($error)) || (empty($error)) )  {
+	if ( (!isset($error)) || (empty($error)) ) {
 
 		// Connect to MySQL and choose database
 		try {

@@ -20,9 +20,9 @@ function isPT ($url, $ptkey) {
 
 	// If the URL is in PhishTanks database, it is a valid and online phishing website
 	if (preg_match('/"in_database":true/', $r)) {
-	        return TRUE;
+		return TRUE;
 	} else {
-	        return FALSE;
+		return FALSE;
 	}
 }
 
