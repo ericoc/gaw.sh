@@ -174,21 +174,21 @@ if (isset($_GET['do'])) {
 	/* Enable */
 	} elseif ( ($_GET['do'] == 'enable') && (isset($_GET['id'])) && (is_numeric($_GET['id'])) ) {
 
-		$enable = $link->prepare('UPDATE `urls` SET `status` = 1 WHERE `id` = ?');
+		$enable = $link->prepare("UPDATE `urls` SET `status` = '1' WHERE `id` = ?");
 		$enable->bindValue(1, $_GET['id'], PDO::PARAM_INT);
 		$enable->execute();
 
 	/* Disable */
 	} elseif ( ($_GET['do'] == 'disable') && (isset($_GET['id'])) && (is_numeric($_GET['id'])) ) {
 
-		$disable = $link->prepare('UPDATE `urls` SET `status` = 0 WHERE `id` = ?');
+		$disable = $link->prepare("UPDATE `urls` SET `status` = '0' WHERE `id` = ?");
 		$disable->bindValue(1, $_GET['id'], PDO::PARAM_INT);
 		$disable->execute();
 
 	/* Disable IP */
 	} elseif ( ($_GET['do'] == 'disableip') && (isset($_GET['ip'])) ) {
 
-		$disableip = $link->prepare('UPDATE `urls` SET `status` = 0 WHERE `ip` = ?');
+		$disableip = $link->prepare("UPDATE `urls` SET `status` = '0' WHERE `ip` = ?");
 		$disableip->bindValue(1, $_GET['ip'], PDO::PARAM_STR);
 		$disableip->execute();
 	}
