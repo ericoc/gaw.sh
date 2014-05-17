@@ -14,5 +14,5 @@ $ptkey = '';
 
 // Get some user variables
 $ip = $_SERVER['REMOTE_ADDR'];
-if (isset($_SERVER['HTTP_USER_AGENT'])) { $browser = $_SERVER['HTTP_USER_AGENT']; } else { $browser = ''; }
-if (isset($_SERVER['HTTP_REFERER'])) { $referrer = $_SERVER['HTTP_REFERER']; } else { $referrer = ''; }
+if (isset($_SERVER['HTTP_USER_AGENT'])) { $browser = $_SERVER['HTTP_USER_AGENT']; } else { $browser = NULL; }
+if (isset($_SERVER['HTTP_REFERER'])) { $referrer = $_SERVER['HTTP_REFERER']; } else { $referrer = NULL; }

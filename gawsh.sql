@@ -27,8 +27,8 @@ INSERT INTO `urls` (`id`, `alias`, `url`, `ip`, `time`, `status`) VALUES
 CREATE TABLE IF NOT EXISTS `visits` (
   `id` int(10) unsigned NOT NULL,
   `ip` varchar(128) NOT NULL,
-  `browser` text NOT NULL,
-  `referrer` text NOT NULL,
+  `browser` text,
+  `referrer` text,
   `time` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY `visits` (`id`),
   CONSTRAINT `urlid_fk` FOREIGN KEY (`id`) REFERENCES `urls` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
