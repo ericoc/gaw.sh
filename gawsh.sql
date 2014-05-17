@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `urls` (
   `url` text NOT NULL,
   `ip` varchar(128) NOT NULL,
   `time` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `status` varchar(2) NOT NULL,
+  `status` enum('-1','0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `alias` (`alias`)
 );
