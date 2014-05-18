@@ -194,7 +194,7 @@ if ( (isset($_COOKIE['searchfield'])) && (isset($_COOKIE['searchhow'])) && (isse
 if (!isset($listurls)) {
 
 	if ($sortby == 'visits') {
-		$listurls = $link->prepare("SELECT `urls`.`*`, count(`visits`.`id`) AS `visitors` FROM `urls` INNER JOIN `visits` ON `visits`.`id` = `urls`.`id` GROUP BY `visits`.`id` ORDER BY `visitors` $sorthow LIMIT $limit");
+		$listurls = $link->prepare("SELECT `urls`.*, count(`visits`.`id`) AS `visitors` FROM `urls` INNER JOIN `visits` ON `visits`.`id` = `urls`.`id` GROUP BY `visits`.`id` ORDER BY `visitors` $sorthow LIMIT $limit");
 	} else {
 		$listurls = $link->prepare("SELECT * FROM `urls` ORDER BY `$sortby` $sorthow LIMIT $limit");
 	}
