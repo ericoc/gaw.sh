@@ -43,16 +43,16 @@ Checks domain names IP address(es) against:
 If everything goes well and checks out, we add a URL to the "urls" table of the MySQL database, then...
 
 	mysql> show columns from urls;
-	+--------+------------------+------+-----+-------------------+----------------+
-	| Field  | Type             | Null | Key | Default           | Extra          |
-	+--------+------------------+------+-----+-------------------+----------------+
-	| id     | int(10) unsigned | NO   | PRI | NULL              | auto_increment |
-	| alias  | varchar(50)      | NO   | UNI | NULL              |                |
-	| url    | text             | NO   |     | NULL              |                |
-	| ip     | varchar(128)     | NO   |     | NULL              |                |
-	| time   | timestamp        | NO   |     | CURRENT_TIMESTAMP |                |
-	| status | varchar(2)       | NO   |     | NULL              |                |
-	+--------+------------------+------+-----+-------------------+----------------+
+	+--------+--------------------+------+-----+-------------------+-----------------------------+
+	| Field  | Type               | Null | Key | Default           | Extra                       |
+	+--------+--------------------+------+-----+-------------------+-----------------------------+
+	| id     | int(10) unsigned   | NO   | PRI | NULL              | auto_increment              |
+	| alias  | varchar(50)        | NO   | UNI | NULL              |                             |
+	| url    | text               | NO   |     | NULL              |                             |
+	| ip     | varchar(128)       | NO   |     | NULL              |                             |
+	| time   | timestamp          | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+	| status | enum('-1','0','1') | NO   |     | 1                 |                             |
+	+--------+--------------------+------+-----+-------------------+-----------------------------+
 	6 rows in set (0.01 sec)
 
 If they did not give an (optional) custom alias:
@@ -88,15 +88,15 @@ Example data:
 A row is inserted in to the MySQL "visits" table with the database ID of the URL from the "urls" table (relational, woo!) as well as the IP address, browser, and referring URL of the visitor along with the timestamp of the visit:
 
 	mysql> show columns from visits;
-	+----------+------------------+------+-----+-------------------+-------+
-	| Field    | Type             | Null | Key | Default           | Extra |
-	+----------+------------------+------+-----+-------------------+-------+
-	| id       | int(10) unsigned | NO   | MUL | NULL              |       |
-	| ip       | varchar(128)     | NO   |     | NULL              |       |
-	| browser  | text             | NO   |     | NULL              |       |
-	| referrer | text             | NO   |     | NULL              |       |
-	| time     | timestamp        | NO   |     | CURRENT_TIMESTAMP |       |
-	+----------+------------------+------+-----+-------------------+-------+
+	+----------+------------------+------+-----+-------------------+-----------------------------+
+	| Field    | Type             | Null | Key | Default           | Extra                       |
+	+----------+------------------+------+-----+-------------------+-----------------------------+
+	| id       | int(10) unsigned | NO   | MUL | NULL              |                             |
+	| ip       | varchar(128)     | NO   |     | NULL              |                             |
+	| browser  | text             | YES  |     | NULL              |                             |
+	| referrer | text             | YES  |     | NULL              |                             |
+	| time     | timestamp        | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+	+----------+------------------+------+-----+-------------------+-----------------------------+
 	5 rows in set (0.00 sec)
 
 Example data:
