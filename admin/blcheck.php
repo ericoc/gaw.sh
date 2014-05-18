@@ -17,7 +17,7 @@ try {
 
 // Query for enabled URLs added within the past week
 $weekago = time() - 604800; // 604800 seconds in 7 days
-$geturls = $link->prepare("SELECT `id`, `alias`, `url` FROM `urls` WHERE `status` = '1' AND `time` > FROM_UNIXTIME('$weekago')");
+$geturls = $link->prepare("SELECT `id`, `alias`, `url` FROM `urls` WHERE `status` = '1' AND `time` > FROM_UNIXTIME($weekago)");
 $geturls->execute();
 
 // Bail if there are no URLs to check, otherwise show number being checked

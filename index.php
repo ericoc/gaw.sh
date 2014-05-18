@@ -69,10 +69,9 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		}
 
 		// Add the URL to the database if there are still not any errors
-		$addurl = $link->prepare("INSERT INTO `urls` (`id`, `alias`, `url`, `ip`, `time`, `status`) VALUES ('0', ?, ?, ?, NOW(), '1')");
+		$addurl = $link->prepare("INSERT INTO `urls` VALUES ('0', ?, ?, '$ip', NOW(), '1')");
 		$addurl->bindValue(1, $alias, PDO::PARAM_STR);
 		$addurl->bindValue(2, $url, PDO::PARAM_STR);
-		$addurl->bindValue(3, $ip, PDO::PARAM_STR);
 
 		if ( (!isset($error)) && ($addurl->execute()) ) {
 
@@ -106,8 +105,7 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 
 					if ($doublecheckalias->rowCount() == '0') {
 						$aliasexists = FALSE;
-						$fixalias = $link->prepare("UPDATE `urls` SET `alias` = '$shorturl` WHERE `id` = '$id'");
-						$fixalias->execute();
+						$link->query("UPDATE `urls` SET `alias` = '$shorturl' WHERE `id` = '$id'");
 					} else {
 						$a++;
 					}

@@ -60,7 +60,7 @@ if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
 	}
 
 	// Check if the alias exists
-	$check = $link->prepare("SELECT `id`, `url`, `status` FROM `urls` WHERE `alias` = ?");
+	$check = $link->prepare("SELECT id, url, status FROM `urls` WHERE `alias` = ?");
 	$check->bindValue(1, $_GET['x'], PDO::PARAM_STR);
 	$check->execute();
 
@@ -84,7 +84,7 @@ if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
 				$redirect = $to;
 
 				// Add an entry to the visitors MySQL table
-				$addvisit = $link->prepare("INSERT INTO `visits` (`id`, `ip`, `browser`, `referrer`, `time`) VALUES (?, ?, ?, ?, NOW())");
+				$addvisit = $link->prepare("INSERT INTO `visits` VALUES (?, ?, ?, ?, NOW())");
 				$addvisit->bindValue(1, $id, PDO::PARAM_INT);
 				$addvisit->bindValue(2, $ip, PDO::PARAM_STR);
 				$addvisit->bindValue(3, $browser, PDO::PARAM_STR);
