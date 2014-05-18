@@ -76,7 +76,7 @@ function searchURL ($field, $how, $value) {
 // Create function to display the number of visits to a URL
 function howmanyVisits ($id) {
 	global $link;
-	$howmanyvisits = $link->prepare("SELECT `time` FROM `visits` WHERE `id` = $id");
+	$howmanyvisits = $link->prepare("SELECT `time` FROM `visits` WHERE `id` = '$id'");
 	$howmanyvisits->execute();
 	return $howmanyvisits->rowCount();
 }
@@ -99,6 +99,7 @@ if ( (isset($_POST['limit'])) && (is_numeric($_POST['limit'])) ) {
 } elseif ( (isset($_GET['limit'])) && (is_numeric($_GET['limit'])) ) {
 	$limit = $_GET['limit'];
 
+// Default limit of URLs returned
 } else {
 	$limit = 20;
 }
@@ -142,33 +143,22 @@ if (isset($_GET['do'])) {
 	/* Search */
 	if ( ($_GET['do'] == 'search') && (isset($_POST['value'])) && (!empty($_POST['value'])) ) {
 
-		$field = $_POST['field'];
-		$how = $_POST['how'];
-		$value = $_POST['value'];
-
 		// Set cookies to save search query
-		setcookie('searchfield', $field);
-		setcookie('searchhow', $how);
-		setcookie('searchvalue', $value);
+		setcookie('searchfield', $_POST['field']);
+		setcookie('searchhow', $_POST['how']);
+		setcookie('searchvalue', $_POST['value']);
 
-		$listurls = searchURL($field, $how, $value);
+		$listurls = searchURL($_POST['field'], $_POST['how'], $_POST['value']);
 
 	/* Edit */
 	} elseif ( ($_GET['do'] == 'edit') && (isset($_POST['editid'])) && (is_numeric($_POST['editid'])) ) {
 
-		// Make variables workable
-		$id = $_POST['editid'];
-		$editalias = $_POST['editalias'];
-		$editurl = $_POST['editurl'];
-		$editip = $_POST['editip'];
-		$editstatus = $_POST['editstatus'];
-
 		$editquery = $link->prepare("UPDATE `urls` SET `alias` = ?, `url` = ?, `ip` = ?, `status` = ? WHERE `id` = ?");
-		$editquery->bindValue(1, $editalias);
-		$editquery->bindValue(2, $editurl);
-		$editquery->bindValue(3, $editip);
-		$editquery->bindValue(4, $editstatus);
-		$editquery->bindValue(5, $id);
+		$editquery->bindValue(1, $_POST['editalias']);
+		$editquery->bindValue(2, $_POST['editurl']);
+		$editquery->bindValue(3, $_POST['editip']);
+		$editquery->bindValue(4, $_POST['editstatus']);
+		$editquery->bindValue(5, $_POST['editid']);
 		$editquery->execute();
 
 	/* Enable */
@@ -197,20 +187,16 @@ if (isset($_GET['do'])) {
 // Search if cookie present
 if ( (isset($_COOKIE['searchfield'])) && (isset($_COOKIE['searchhow'])) && (isset($_COOKIE['searchvalue'])) && (!empty($_COOKIE['searchvalue'])) && (!isset($_POST['value'])) ) {
 
-	$field = $_COOKIE['searchfield'];
-	$how = $_COOKIE['searchhow'];
-	$value = $_COOKIE['searchvalue'];
-
-	$listurls = searchURL($field, $how, $value);
+	$listurls = searchURL($_COOKIE['searchfield'], $_COOKIE['searchhow'], $_COOKIE['searchvalue']);
 }
 
 // Default query if we are not searching, and clear cookies
 if (!isset($listurls)) {
 
 	if ($sortby == 'visits') {
-		$listurls = $link->prepare("SELECT urls.*, count(visits.id) AS visitors FROM urls INNER JOIN visits ON visits.id = urls.id GROUP BY visits.id ORDER BY visitors $sorthow LIMIT $limit");
+		$listurls = $link->prepare("SELECT `urls`.`*`, count(`visits`.`id`) AS `visitors` FROM `urls` INNER JOIN `visits` ON `visits`.`id` = `urls`.`id` GROUP BY `visits`.`id` ORDER BY `visitors` $sorthow LIMIT $limit");
 	} else {
-		$listurls = $link->prepare("SELECT * FROM `urls` ORDER BY $sortby $sorthow LIMIT $limit");
+		$listurls = $link->prepare("SELECT * FROM `urls` ORDER BY `$sortby` $sorthow LIMIT $limit");
 	}
 
 	$listurls->execute();
