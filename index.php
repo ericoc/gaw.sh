@@ -24,8 +24,8 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		$url = 'http://' . $url;
 	}
 
-	// Trim the alias, if one was submitted
-	if ( (isset($_POST['alias'])) && (!empty($_POST['alias'])) ) {
+	// Trim and lower-case the alias, if one was submitted
+	if ( (isset($_POST['alias'])) && (!empty(trim($_POST['alias']))) ) {
 		$alias = trim(strtolower($_POST['alias']));
 
 	// Set an empty alias if none was submitted
@@ -49,83 +49,86 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		// Connect to MySQL and choose database
 		try {
 			$link = new PDO("mysql:host=$sqlhost;dbname=$sqldb", $sqluser, $sqlpass);
+			$link->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		// Show clean 503 service unavailable error if the database is unavailable
 		} catch (PDOException $e) {
 			header('Location: /503', TRUE, 302);
 		}
 
-		// Check if the alias has been used already
+		// Try to add the URL to the database right now if we were given an alias that has a possibility of working
 		if ( (isset($alias)) && (!empty($alias)) ) {
 
-			$checkalias = $link->prepare("SELECT `id` FROM `urls` WHERE `alias` = ?");
-			$checkalias->bindValue(1, $alias, PDO::PARAM_STR);
-			$checkalias->execute();
+			try {
+				$addurl = $link->prepare("INSERT INTO `urls` (`id`, `alias`, `url`, `ip`, `time`, `status`) VALUES ('0', ?, ?, ?, NOW(), '1')");
+				$addurl->bindValue(1, $alias, PDO::PARAM_STR);
+				$addurl->bindValue(2, $url, PDO::PARAM_STR);
+				$addurl->bindValue(3, $ip, PDO::PARAM_STR);
+				$addurl->execute();
 
-			// Error out if alias has been used before
-			if ($checkalias->rowCount() >= 1) {
-				$error = 'Alias taken';
-			}
-		}
-
-		// Add the URL to the database if there are still not any errors
-		$addurl = $link->prepare("INSERT INTO `urls` (`id`, `alias`, `url`, `ip`, `time`, `status`) VALUES ('0', ?, ?, ?, NOW(), '1')");
-		$addurl->bindValue(1, $alias, PDO::PARAM_STR);
-		$addurl->bindValue(2, $url, PDO::PARAM_STR);
-		$addurl->bindValue(3, $ip, PDO::PARAM_STR);
-
-		if ( (!isset($error)) && ($addurl->execute()) ) {
-
-			// Determine the short URL that we are going to display
-			if ( (isset($alias)) && (!empty($alias)) ) {
 				$shorturl = $alias;
 
-			// Generate an alias if none was given
-			} else {
+			// Catch any exception, most likely meaning that the alias is taken so we give up
+			} catch (PDOException $addex) {
+				$error = 'Alias taken!';
+			}
 
-				// Get the database ID of the newly created URL
-				$id = $link->lastInsertId();
+		// Generate a unique alias if none was given to add the URL to the database
+		} else {
 
-				// Check if the alias we are generating has been used before (in case someone manually created this alias in the past)
-				$aliasexists = 'TRUE';
-				$a = 0;
-				while ($aliasexists == 'TRUE') {
+			// Start a MySQL transaction where we insert the row for the URL first with an empty alias, so we can later update it with a generated/unique alias
+			$link->beginTransaction();
+			$addurl = $link->prepare("INSERT INTO `urls` (`id`, `alias`, `url`, `ip`, `time`, `status`) VALUES ('0', '', ?, ?, NOW(), '1')");
+			$addurl->bindValue(1, $url, PDO::PARAM_STR);
+			$addurl->bindValue(2, $ip, PDO::PARAM_STR);
+			$addurl->execute();
 
-					// Create a small alias simply using the database ID if it is the first time going through the loop
-					if ($a == '0') {
-						$shorturl = base_convert($id, 10, 36);
+			// Get the database ID of the URL that we are inserting
+			$id = $link->lastInsertId();
 
-					// Prepend a random number, then append the UNIX timestamp to the database ID, and convert that to base36, if we are going through the loop more than once
-					} else {
-						$shorturl = base_convert(rand(0,10).$id.time(), 10, 36);
-					}
+			// Loop until we can update the row that we just inserted with a uniquely generated alias without an exception being thrown
+			// This normally should just work on the first shot, unless someone manually created it in the past
+			$aliasexists = TRUE;
+			$fix = 0;
 
-					// See if this alias exists in the database any where; if not, create it. Otherwise, re-loop
-					$doublecheckalias = $link->prepare("SELECT `id` FROM `urls` WHERE `alias` = '$shorturl'");
-					$doublecheckalias->execute();
+			while ($aliasexists == TRUE) {
 
-					if ($doublecheckalias->rowCount() == '0') {
-						$aliasexists = FALSE;
-						$fixalias = $link->prepare("UPDATE `urls` SET `alias` = '$shorturl` WHERE `id` = '$id'");
-						$fixalias->execute();
-					} else {
-						$a++;
-					}
+				// Create a small alias simply using the database ID if it is the first time going through the loop
+				if ($fix == 0) {
+					$shorturl = base_convert($id, 10, 36);
+
+				// Prepend a random number, then append the UNIX timestamp to the database ID, and convert that to base36, if we are going through the loop more than once
+				} else {
+					$shorturl = base_convert(rand(0,10).$id.time(), 10, 36);
+				}
+
+				// Try to update the URL row that we inserted with the alias that we just generated and commit our transaction
+				try {
+					$fixalias = $link->prepare("UPDATE `urls` SET `alias` = ? WHERE `id` = '$id'");
+					$fixalias->bindValue(1, $shorturl, PDO::PARAM_STR);
+					$fixalias->execute();
+					$link->commit();
+					$aliasexists = FALSE;
+
+				// If we get an exception indicating that the alias is not unique, re-loop generating a new hopefully unique alias
+				} catch (PDOException $fixex) {
+					$fix++;
+					$aliasexists = TRUE;
 				}
 			}
 		}
-
-		// Close MySQL connection
-		$link = null;
 	}
 
-	// Show the results
-	if (isset($shorturl)) {
-		echo '<a id="url" href="/' . $shorturl . '">http://gaw.sh/' . $shorturl . '</a>';
+	// Close MySQL connection
+	$link = null;
 
-	// Otherwise, show any errors
-	} elseif (isset($error)) {
+	// Show any errors
+	if (isset($error)) {
 		echo '<span id="error">' . $error . '</span>';
+
+	// Otherwise, show any successful result
+	} elseif (isset($shorturl)) {
+		echo '<a id="url" href="/' . $shorturl . '">http://gaw.sh/' . $shorturl . '</a>';
 	}
 
 	echo "<br><br>\n";
