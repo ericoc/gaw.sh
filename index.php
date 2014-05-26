@@ -28,13 +28,18 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 	if ( (isset($_POST['alias'])) && (!empty(trim($_POST['alias']))) ) {
 		$alias = trim(strtolower($_POST['alias']));
 
+		// Check if submitted alias is sane (<= 50 characters, and alpha-numeric)
+		if ( (strlen($alias) > 50) || (!preg_match('/^[a-z0-9]+$/i', $alias)) ) {
+			$badalias = true;
+		}
+
 	// Set an empty alias if none was submitted
 	} else {
 		$alias = '';
 	}
 
-	// Check if submitted alias has sane characters
-	if ( (!empty($alias)) && (!preg_match('/^[a-z0-9]+$/i', $alias)) ) {
+	// Return error if alias was not sane
+	if (isset($badalias)) {
 		$error = 'Invalid alias';
 
 	// Require functions with blacklist/URL checks and run the URL through said checks
@@ -138,7 +143,7 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 ?>
 <form method="post">
 <input type="text" size="50" name="url" value="http://"><br>
-Alias (optional): <input type="text" size="20" name="alias"><br><br>
+Alias (optional): <input type="text" size="20" maxlength="50" name="alias"><br><br>
 <input type="submit" value="shorten!">
 <input type="reset" value="nevermind">
 </form>
