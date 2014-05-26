@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `visits` (
   `referrer` text,
   `time` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY `visits` (`id`),
-  CONSTRAINT `urlid_fk` FOREIGN KEY (`id`) REFERENCES `urls` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `urlid_fk` FOREIGN KEY (`id`) REFERENCES `urls` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- --------------------------------------------------------
