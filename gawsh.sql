@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `urls` (
   `alias` varchar(50) NOT NULL,
   `url` text NOT NULL,
   `ip` varchar(128) NOT NULL,
-  `time` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `time` timestamp DEFAULT CURRENT_TIMESTAMP,
   `status` enum('-1','0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `alias` (`alias`)
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `visits` (
   `ip` varchar(128) NOT NULL,
   `browser` text,
   `referrer` text,
-  `time` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `time` timestamp DEFAULT CURRENT_TIMESTAMP,
   KEY `visits` (`id`),
   CONSTRAINT `urlid_fk` FOREIGN KEY (`id`) REFERENCES `urls` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
