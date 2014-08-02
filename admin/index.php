@@ -47,27 +47,27 @@ function searchURL ($field, $how, $value) {
 
 	switch ($how) {
 		case 'equal':
-			$query .= "= ?";
+			$query .= "= :value";
 		break;
 		case 'notequal':
-			$query .= "!= ?";
+			$query .= "!= :value";
 		break;
 		case 'contains':
 			$value = '%' . $value . '%';
-			$query .= "LIKE ?";
+			$query .= "LIKE :value";
 		break;
 		case 'greater':
-			$query .= "> ?";
+			$query .= "> :value";
 		break;
 		case 'less':
-			$query .= "< ?";
+			$query .= "< :value";
 		break;
 	}
 
 	$query .= " ORDER BY `$sortby` $sorthow LIMIT $limit";
 
 	$st = $link->prepare($query);
-	$st->bindValue(1, $value);
+	$st->bindValue(':value', $value);
 	$st->execute();
 
 	return $st;
@@ -153,33 +153,33 @@ if (isset($_GET['do'])) {
 	/* Edit */
 	} elseif ( ($_GET['do'] == 'edit') && (isset($_POST['editid'])) && (is_numeric($_POST['editid'])) ) {
 
-		$editquery = $link->prepare("UPDATE `urls` SET `alias` = ?, `url` = ?, `ip` = ?, `status` = ? WHERE `id` = ?");
-		$editquery->bindValue(1, $_POST['editalias']);
-		$editquery->bindValue(2, $_POST['editurl']);
-		$editquery->bindValue(3, $_POST['editip']);
-		$editquery->bindValue(4, $_POST['editstatus']);
-		$editquery->bindValue(5, $_POST['editid']);
+		$editquery = $link->prepare("UPDATE `urls` SET `alias` = :alias, `url` = :url, `ip` = :ip, `status` = :status WHERE `id` = :id");
+		$editquery->bindValue(':alias', $_POST['editalias'], PDO::PARAM_STR);
+		$editquery->bindValue(':url', $_POST['editurl'], PDO::PARAM_STR);
+		$editquery->bindValue(':ip', $_POST['editip'], PDO::PARAM_STR);
+		$editquery->bindValue(':status', $_POST['editstatus'], PDO::PARAM_INT);
+		$editquery->bindValue(':id', $_POST['editid'], PDO::PARAM_INT);
 		$editquery->execute();
 
 	/* Enable */
 	} elseif ( ($_GET['do'] == 'enable') && (isset($_GET['id'])) && (is_numeric($_GET['id'])) ) {
 
-		$enable = $link->prepare("UPDATE `urls` SET `status` = '1' WHERE `id` = ?");
-		$enable->bindValue(1, $_GET['id'], PDO::PARAM_INT);
+		$enable = $link->prepare("UPDATE `urls` SET `status` = '1' WHERE `id` = :id");
+		$enable->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
 		$enable->execute();
 
 	/* Disable */
 	} elseif ( ($_GET['do'] == 'disable') && (isset($_GET['id'])) && (is_numeric($_GET['id'])) ) {
 
-		$disable = $link->prepare("UPDATE `urls` SET `status` = '0' WHERE `id` = ?");
-		$disable->bindValue(1, $_GET['id'], PDO::PARAM_INT);
+		$disable = $link->prepare("UPDATE `urls` SET `status` = '0' WHERE `id` = :id");
+		$disable->bindValue(':id', $_GET['id'], PDO::PARAM_INT);
 		$disable->execute();
 
 	/* Disable IP */
 	} elseif ( ($_GET['do'] == 'disableip') && (isset($_GET['ip'])) ) {
 
-		$disableip = $link->prepare("UPDATE `urls` SET `status` = '0' WHERE `ip` = ?");
-		$disableip->bindValue(1, $_GET['ip'], PDO::PARAM_STR);
+		$disableip = $link->prepare("UPDATE `urls` SET `status` = '0' WHERE `ip` = :ip");
+		$disableip->bindValue(':ip', $_GET['ip'], PDO::PARAM_STR);
 		$disableip->execute();
 	}
 }

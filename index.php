@@ -65,10 +65,10 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		if ( (isset($alias)) && (!empty($alias)) ) {
 
 			try {
-				$addurl = $link->prepare("INSERT INTO `urls` (`id`, `alias`, `url`, `ip`, `time`, `status`) VALUES ('0', ?, ?, ?, NOW(), '1')");
-				$addurl->bindValue(1, $alias, PDO::PARAM_STR);
-				$addurl->bindValue(2, $url, PDO::PARAM_STR);
-				$addurl->bindValue(3, $ip, PDO::PARAM_STR);
+				$addurl = $link->prepare("INSERT INTO `urls` (`id`, `alias`, `url`, `ip`, `time`, `status`) VALUES ('0', :alias, :url, :ip, NOW(), '1')");
+				$addurl->bindValue(':alias', $alias, PDO::PARAM_STR);
+				$addurl->bindValue(':url', $url, PDO::PARAM_STR);
+				$addurl->bindValue(':ip', $ip, PDO::PARAM_STR);
 				$addurl->execute();
 
 				$shorturl = $alias;
@@ -83,9 +83,9 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 
 			// Start a MySQL transaction where we insert the row for the URL first with an empty alias, so we can later update it with a generated/unique alias
 			$link->beginTransaction();
-			$addurl = $link->prepare("INSERT INTO `urls` (`id`, `alias`, `url`, `ip`, `time`, `status`) VALUES ('0', '', ?, ?, NOW(), '1')");
-			$addurl->bindValue(1, $url, PDO::PARAM_STR);
-			$addurl->bindValue(2, $ip, PDO::PARAM_STR);
+			$addurl = $link->prepare("INSERT INTO `urls` (`id`, `alias`, `url`, `ip`, `time`, `status`) VALUES ('0', '', :url, :ip, NOW(), '1')");
+			$addurl->bindValue(':url', $url, PDO::PARAM_STR);
+			$addurl->bindValue(':ip', $ip, PDO::PARAM_STR);
 			$addurl->execute();
 
 			// Get the database ID of the URL that we are inserting
@@ -109,8 +109,8 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 
 				// Try to update the URL row that we inserted with the alias that we just generated and commit our transaction
 				try {
-					$fixalias = $link->prepare("UPDATE `urls` SET `alias` = ? WHERE `id` = '$id'");
-					$fixalias->bindValue(1, $shorturl, PDO::PARAM_STR);
+					$fixalias = $link->prepare("UPDATE `urls` SET `alias` = :alias WHERE `id` = '$id'");
+					$fixalias->bindValue(':alias', $shorturl, PDO::PARAM_STR);
 					$fixalias->execute();
 					$link->commit();
 					$aliasexists = FALSE;
