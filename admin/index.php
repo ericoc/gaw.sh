@@ -76,9 +76,11 @@ function searchURL ($field, $how, $value) {
 // Create function to display the number of visits to a URL
 function howmanyVisits ($id) {
 	global $link;
-	$howmanyvisits = $link->prepare("SELECT `time` FROM `visits` WHERE `id` = '$id'");
+	$howmanyvisits = $link->prepare("SELECT COUNT(*) FROM `visits` WHERE `id` = :id");
+	$howmanyvisits->bindValue(':id', $id, PDO::PARAM_INT);
 	$howmanyvisits->execute();
-	return $howmanyvisits->rowCount();
+
+	return $howmanyvisits->fetchColumn();
 }
 
 // Connect to MySQL and choose database
@@ -279,7 +281,8 @@ if ($counturls == '0') {
 if ( (isset($_GET['do'])) && ($_GET['do'] == 'edit') && (isset($_GET['id'])) && (is_numeric($_GET['id'])) ) {
 
 	$editid = $_GET['id'];
-	$editform = $link->prepare("SELECT * FROM `urls` WHERE `id` = '$editid'");
+	$editform = $link->prepare("SELECT * FROM `urls` WHERE `id` = :id");
+	$editform->bindValue(':id', $editid, PDO::PARAM_INT);
 	$editform->execute();
 
 	if ($editform->rowCount() != 0) {

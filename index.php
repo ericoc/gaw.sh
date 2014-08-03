@@ -109,8 +109,9 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 
 				// Try to update the URL row that we inserted with the alias that we just generated and commit our transaction
 				try {
-					$fixalias = $link->prepare("UPDATE `urls` SET `alias` = :alias WHERE `id` = '$id'");
+					$fixalias = $link->prepare("UPDATE `urls` SET `alias` = :alias WHERE `id` = :id");
 					$fixalias->bindValue(':alias', $shorturl, PDO::PARAM_STR);
+					$fixalias->bindValue(':id', $id, PDO::PARAM_INT);
 					$fixalias->execute();
 					$link->commit();
 					$aliasexists = FALSE;
