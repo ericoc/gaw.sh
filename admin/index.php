@@ -37,7 +37,7 @@ function searchURL ($field, $how, $value) {
 	global $limit;
 
 	$query = 'SELECT * FROM `';
-	if ($field == 'visits') {
+	if ( ($sortby == 'visits') || ($field == 'visits') ) {
 		$query .= 'searchurlsvisits';
 	} else {
 		$query .= 'urls';
