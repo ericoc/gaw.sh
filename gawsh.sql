@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `urls` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `alias` varchar(50) NOT NULL,
   `url` text NOT NULL,
-  `ip` varchar(128) NOT NULL,
+  `ip` varchar(39) NOT NULL,
   `time` timestamp DEFAULT CURRENT_TIMESTAMP,
   `status` enum('-1','0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
@@ -26,7 +26,7 @@ INSERT INTO `urls` (`id`, `alias`, `url`, `ip`, `time`, `status`) VALUES
 -- `visits` table
 CREATE TABLE IF NOT EXISTS `visits` (
   `id` int(10) unsigned NOT NULL,
-  `ip` varchar(128) NOT NULL,
+  `ip` varchar(39) NOT NULL,
   `browser` text,
   `referrer` text,
   `time` timestamp DEFAULT CURRENT_TIMESTAMP,
