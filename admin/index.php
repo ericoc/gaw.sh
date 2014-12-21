@@ -129,7 +129,7 @@ if ( (isset($_GET['sortby'])) && (isset($_GET['sorthow'])) ) {
 // Use sort method from cookie if available
 } elseif ( (isset($_COOKIE['sortby'])) && (isset($_COOKIE['sorthow'])) ) {
 
-	if ( ($_COOKIE['sortby'] == 'id') || ($_COOKIE['sortby'] == 'alias') ||  ($_COOKIE['sortby'] == 'url') || ($_COOKIE['sortby'] == 'ip') || ($_COOKIE['sortby'] == 'time') || ($_COOKIE['sortby'] == 'visits') ) {
+	if ( ($_COOKIE['sortby'] == 'id') || ($_COOKIE['sortby'] == 'alias') || ($_COOKIE['sortby'] == 'url') || ($_COOKIE['sortby'] == 'ip') || ($_COOKIE['sortby'] == 'time') || ($_COOKIE['sortby'] == 'visits') ) {
 
 		if ( ($_COOKIE['sorthow'] == 'asc') || ($_COOKIE['sorthow'] == 'desc') ) {
 
