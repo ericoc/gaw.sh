@@ -172,6 +172,10 @@ function checkURL ($url, $local = 'false') {
 	if (!filter_var($url, FILTER_VALIDATE_URL)) {
 		$error = 'Invalid URL (formatting)';
 
+	// Disallow URLs containing "=http://" or "=https://"
+	} elseif ( (preg_match('/=http(s)?:\/\//', $url)) || (preg_match('/%3Dhttp(s)?%3A%2F%2F/', $url)) ) {
+		$error = 'Invalid URL';
+
 	// Check remote domain names against the dumb domain list
 	} elseif ( ($local == 'false') && (isDumb($domain)) ) {
 		$error = 'Invalid URL (bad domain name)';
