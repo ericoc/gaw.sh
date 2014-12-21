@@ -1,5 +1,15 @@
 <?php
 
+// Create a function to list number of visits to an alias (/i/<alias>)
+function showInfo ($link, $id) {
+
+	$howmanyvisits = $link->prepare("SELECT COUNT(*) FROM `visits` WHERE `id` = :id");
+	$howmanyvisits->bindValue(':id', $id, PDO::PARAM_INT);
+	$howmanyvisits->execute();
+
+	return $howmanyvisits->fetchColumn();
+}
+
 // Create a function to set header, display error message on bad URLs, and exit
 function showError ($error) {
 
@@ -29,6 +39,13 @@ function showError ($error) {
 </html>
 END;
 } // Finish our custom error message function
+
+// Show info/stats on an alias if requested (/i/<alias>)
+$infopattern = '/^i\//';
+if (preg_match($infopattern, $_GET['x'])) {
+	$_GET['x'] = preg_replace($infopattern, '\1', $_GET['x']);
+	$info = true;
+}
 
 // Handle direct visits to this file, without an alias passed, by redirecting to "/"
 if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
@@ -80,16 +97,25 @@ if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
 			// Active
 			case 1:
 
-				// Set a variable so that we redirect later, after the MySQL connection is closed
-				$redirect = $to;
+				// If info/stats on the alias is being requested, retrieve and display it
+				if (isset($info)) {
 
-				// Add an entry to the visitors MySQL table
-				$addvisit = $link->prepare("INSERT INTO `visits` (`id`, `ip`, `browser`, `referrer`, `time`) VALUES (:id, :ip, :browser, :referrer, NOW())");
-				$addvisit->bindValue(':id', $id, PDO::PARAM_INT);
-				$addvisit->bindValue(':ip', $ip, PDO::PARAM_STR);
-				$addvisit->bindValue(':browser', $browser, PDO::PARAM_STR);
-				$addvisit->bindValue(':referrer', $referrer, PDO::PARAM_STR);
-				$addvisit->execute();
+					echo showInfo($link, $id);
+
+				// If it's not a request for alias info, just add a visit and set up the redirect
+				} else {
+
+					// Set a variable so that we redirect later, after the MySQL connection is closed
+					$redirect = $to;
+
+					// Add an entry to the visitors MySQL table
+					$addvisit = $link->prepare("INSERT INTO `visits` (`id`, `ip`, `browser`, `referrer`, `time`) VALUES (:id, :ip, :browser, :referrer, NOW())");
+					$addvisit->bindValue(':id', $id, PDO::PARAM_INT);
+					$addvisit->bindValue(':ip', $ip, PDO::PARAM_STR);
+					$addvisit->bindValue(':browser', $browser, PDO::PARAM_STR);
+					$addvisit->bindValue(':referrer', $referrer, PDO::PARAM_STR);
+					$addvisit->execute();
+				}
 			break;
 
 			// Disabled returns 410 Gone error page
@@ -109,6 +135,7 @@ if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
 	$link = null;
 
 } // End alias search check
+
 
 // Redirect the user to the long URL if it was an active/valid alias
 if (isset($redirect)) {

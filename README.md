@@ -136,6 +136,11 @@ HTTP 404 ("Not Found") error message otherwise (if the short URL never existed o
 
 ---------------------------------------
 
+## Public URL statistics
+
+There is also a publicly usable function by which to show the number of visits to a short URL using "go.php".
+The number of visits to a specific alias can be shown by appending the alias with "/i/", such as http://gaw.sh/i/whatever
+
 ## Administering URLs
 
 I built a simple administration panel to view/manage URLs at /admin/ which just uses .htaccess/.htpasswd for authentication.
