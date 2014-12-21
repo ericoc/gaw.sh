@@ -136,10 +136,10 @@ HTTP 404 ("Not Found") error message otherwise (if the short URL never existed o
 
 ---------------------------------------
 
-## Public URL statistics
+## Public URL Statistics
 
-There is also a publicly usable function by which to show the number of visits to a short URL using "go.php".
-The number of visits to a specific alias can be shown by appending the alias with "/i/", such as http://gaw.sh/i/whatever
+There is also a publicly usable function by which to view the number of visits to a short URL.
+The number of visits to a specific alias can be seen by prepending the alias with "/i/", such as http://gaw.sh/i/whatever
 
 ## Administering URLs
 
