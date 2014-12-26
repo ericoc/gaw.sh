@@ -1,13 +1,28 @@
 <?php
 
-// Create a function to list number of visits to an alias (/i/<alias>)
+// Create a function to display information publicly about an alias (/i/<alias>) if requested
 function showInfo ($link, $id) {
 
+	// Determine number of visits to the short URL
 	$howmanyvisits = $link->prepare("SELECT COUNT(*) FROM `visits` WHERE `id` = :id");
 	$howmanyvisits->bindValue(':id', $id, PDO::PARAM_INT);
-	$howmanyvisits->execute();
+	$visits = $howmanyvisits->execute();
 
-	return $howmanyvisits->fetchColumn();
+	// Find basic details (ID, alias, long URL, and time added) regarding the short URL
+	$info = $link->prepare("SELECT `id`, `alias`, `url`, `time`, `status` FROM `urls` WHERE `id` = :id");
+	$info->bindValue(':id', $id, PDO::PARAM_INT);
+	$info->execute();
+
+	while ($row = $info->fetch(PDO::FETCH_ASSOC)) {
+		$id = $row['id'];
+		$alias = $row['alias'];
+		$url = $row['url'];
+		$time = strtotime($row['time']);
+	}
+
+	// Build a message to display public information and return it
+	$out = "$id<br>\n$alias -> $url<br>\n" . date ('l, F jS, Y g:i:s A', $time) . "<br>\n$visits visit(s)";
+	return $out;
 }
 
 // Create a function to set header, display error message on bad URLs, and exit
