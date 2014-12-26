@@ -6,7 +6,8 @@ function showInfo ($link, $id) {
 	// Determine number of visits to the short URL
 	$howmanyvisits = $link->prepare("SELECT COUNT(*) FROM `visits` WHERE `id` = :id");
 	$howmanyvisits->bindValue(':id', $id, PDO::PARAM_INT);
-	$visits = $howmanyvisits->execute();
+	$howmanyvisits->execute();
+	$visits = $howmanyvisits->fetchColumn();
 
 	// Find basic details (ID, alias, long URL, and time added) regarding the short URL
 	$info = $link->prepare("SELECT `id`, `alias`, `url`, `time`, `status` FROM `urls` WHERE `id` = :id");
