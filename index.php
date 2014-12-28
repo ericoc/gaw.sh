@@ -17,6 +17,7 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 
 	// Require configuration/settings
 	require('admin/config.php'); // MySQL credentials and user variables
+	require('functions.php'); // Blacklist/URL functions
 
 	// Trim submitted URL, throw "http://" on the front if it does not start with either http:// or https://
 	$url = trim($_POST['url']);
@@ -42,9 +43,8 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 	if (isset($badalias)) {
 		$error = 'Invalid alias';
 
-	// Require functions with blacklist/URL checks and run the URL through said checks
+	// Run blacklist/URL checks
 	} else {
-		require('functions.php');
 		$error = checkURL($url);
 	}
 
@@ -59,6 +59,12 @@ if ( (isset($_POST['url'])) && (!empty($_POST['url'])) && ($_POST['url'] != 'htt
 		// Show clean 503 service unavailable error if the database is unavailable
 		} catch (PDOException $e) {
 			header('Location: /503', TRUE, 302);
+		}
+
+		// Bail if the IP address is being rude and has added too many URLs recently
+		if (isRude($link, $ip)) {
+			$link = null;
+			header('Location: /429', TRUE, 302);
 		}
 
 		// Try to add the URL to the database right now if we were given an alias that has a possibility of working

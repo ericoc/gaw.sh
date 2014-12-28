@@ -71,7 +71,7 @@ if ( (!isset($_GET['x'])) || (empty($_GET['x'])) ) {
 } else {
 
 	// Create an array of possible HTTP error codes and their meanings
-	$errors = array('401' => 'Not Authorized', '403' => 'Forbidden', '404' => 'Not Found', '410' => 'Gone', '500' => 'Internal Server Error', '503' => 'Service Unavailable');
+	$errors = array('401' => 'Not Authorized', '403' => 'Forbidden', '404' => 'Not Found', '410' => 'Gone', '429' => 'Too Many Requests', '500' => 'Internal Server Error', '503' => 'Service Unavailable');
 
 	// Just show an error immediately for forced errors and stop further execution
 	if (array_key_exists($_GET['x'], $errors)) {

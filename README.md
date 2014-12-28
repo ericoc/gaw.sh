@@ -16,6 +16,17 @@ My design skills suck, but it works. Thanks to [Jico](https://github.com/jico) f
 
 ### This section describes most of the main/index page of http://gaw.sh/
 
+Check that the IP address adding the URL has not hit the rate limit defined within the isRude function in functions.php:
+
+	// Create an interval => limit array that defines rudeness for an IP address
+	$rudeness = array(1 => 1, 60 => 5, 3600 => 10, 86400 => 30);
+
+To prevent abuse or spam, per the above array - a single IP address cannot add more than:
+ * 1 URL per second
+ * 5 URLs per minute (60 seconds)
+ * 10 URLs per hour (3,600 seconds)
+ * 30 URLs per day (86,400 seconds)
+
 Check that URL actually exists and does not return 404
 * http://php.net/manual/en/book.curl.php
 

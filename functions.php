@@ -1,5 +1,29 @@
 <?php
 
+// Create a function to determine if a specific IP addresses has made too many URLs within a short/recent time span by querying the database
+function isRude($link, $ip) {
+
+	// Create an interval => limit array that defines rudeness for an IP address
+	$rudeness = array(1 => 1, 60 => 5, 3600 => 10, 86400 => 30);
+
+	foreach ($rudeness as $interval => $limit) {
+
+		$sql = "SELECT COUNT(*) FROM `urls` WHERE `ip` = :ip AND `time` > DATE_SUB(NOW(), INTERVAL $interval SECOND) AND `status` = '1'";
+		$checkrude = $link->prepare($sql);
+		$checkrude->bindParam(':ip', $ip);
+		$checkrude->execute();
+		$urlcount = $checkrude->fetchColumn();
+
+		// Return true stopping the addition of a URL if the IP address is rude and has hit or exceeded the limit for an interval
+		if ($urlcount >= $limit) {
+			return TRUE;
+		}
+	}
+
+	// All good if the IP address has not hit any of the limits and they are not rude
+	return FALSE;
+}
+
 // Create a function to check if a URL is valid/online phishing website according to PhishTank
 function isPT ($url, $ptkey) {
 
